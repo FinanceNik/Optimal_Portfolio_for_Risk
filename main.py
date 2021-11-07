@@ -1,9 +1,10 @@
 # We import pandas with an alias "pd". Make it easier to work with the pandas functions. Pandas is the best library
 # in Python for working with large datasets.
 import pandas as pd
+
+# Pyplot is Matplotlib's plotting library. This is used to show some graphs and to test the functions.
 from matplotlib import pyplot as plt
 import numpy as np
-import openpyxl
 
 # pandas_datareader is a sub-module of pandas that allows us to call finance APIs to get datasets directly from source.
 import pandas_datareader as web
@@ -13,7 +14,7 @@ import pandas_datareader as web
 from datetime import datetime
 
 # This is the list of assets that are going to be used. ATM just dummies.
-assets_used = ['AAPL', 'NKE', 'GOOG']
+assets_used = ['NKE', 'AMZN', 'GOOG']
 
 
 # This is the function that will be responsible for getting the data and converting it to a pandas dataframe.
@@ -63,17 +64,6 @@ def data_prepper():
     return dfs
 
 
-# Not sure if this has any use tbh.
-def get_volatilities():
-    assets = data_prepper()
-    volatilities = []
-    for i in range(len(assets)):
-        df = assets[i]['Excess']
-        variance = df.var()
-        volatility = np.sqrt(variance * 250)  # <-- The 250 definitely has to be changed when using monthly data!!!
-        volatilities.append(volatility)
-
-
 # Creation of the Covariance Matrix. This is important for later portfolio optimization.
 def covariance_matrix():
     assets = data_prepper()
@@ -91,7 +81,7 @@ def covariance_matrix():
 
 # This function creates a portfolio with fixed weights (for now). It is just for testing purposes but it spits out a
 # graph with the efficient frontier of all of the given stocks.
-def random_portfolio():
+def optimal_portfolio():
     assets = data_prepper()
     names = assets_used
     dfs = []
@@ -101,20 +91,10 @@ def random_portfolio():
         dfs.append(df)
     df = pd.concat(dfs, axis=1, ignore_index=False)
     cov_matrix = covariance_matrix()
-    weights = {names[0]: 0.4, names[1]: 0.2, names[2]: 0.4}  # <-- This is the fixed weight part.
-    port_var = cov_matrix.mul(weights, axis=0).mul(weights, axis=1).sum().sum()
     ind_er = df.resample('Y').last().pct_change().mean()
-    weights = [0.4, 0.2, 0.4]  # <-- weights are defined again because this function used a list and the other a tuple.
-    # port_er is the expected return of the whole portfolio.
-    port_er = (weights*ind_er).sum()
-    # ann_sd is the annualized standard deviation for the portfolio
-    ann_sd = df.pct_change().apply(lambda x: np.log(1+x)).std().apply(lambda x: x*np.sqrt(250))
 
-    assets = pd.concat([ind_er, ann_sd], axis=1)
-    assets.columns = ['Returns', 'Volatility']
-
-    p_ret = []
-    p_vol = []
+    p_returns = []
+    p_volatility = []
     p_weights = []
 
     num_assets = len(df.columns)
@@ -125,24 +105,32 @@ def random_portfolio():
         weights = weights / np.sum(weights)
         p_weights.append(weights)
         returns = np.dot(weights, ind_er)
-        # weights
-        p_ret.append(returns)
+        p_returns.append(returns)
         var = cov_matrix.mul(weights, axis=0).mul(weights, axis=1).sum().sum()  # Portfolio Variance
         sd = np.sqrt(var)
         ann_sd = sd * np.sqrt(250)
-        p_vol.append(ann_sd)
+        p_volatility.append(ann_sd)
 
-    data = {'Returns': p_ret, 'Volatility': p_vol}
+    data = {'Returns': p_returns, 'Volatility': p_volatility}
 
     for counter, symbol in enumerate(df.columns.tolist()):
         data[symbol + ' weight'] = [w[counter] for w in p_weights]
 
+    # These are all the possible portfolio combinations.
     portfolios = pd.DataFrame(data)
-    portfolios.plot.scatter(x='Volatility', y='Returns', marker='o', s=10, alpha=0.3, grid=True, figsize=[10, 10])
+    min_vol_port = portfolios.iloc[portfolios['Volatility'].idxmin()]
+    rf = 0.00  # rf is the risk-free interest rate.
+    max_sharpe_ratio = portfolios.iloc[((portfolios['Returns'] - rf) / portfolios['Volatility']).idxmax()]
+
+    # The visualization of the efficient frontier.
+    plt.subplots(figsize=[10, 10])
+    plt.scatter(portfolios['Volatility'], portfolios['Returns'], marker='o', s=10, alpha=0.3)
+    plt.scatter(min_vol_port[1], min_vol_port[0], color='r', marker='*', s=500)
+    plt.scatter(max_sharpe_ratio[1], max_sharpe_ratio[0], color='g', marker='*', s=500)
     plt.show()
 
 
-random_portfolio()
+optimal_portfolio()
 
 
 
