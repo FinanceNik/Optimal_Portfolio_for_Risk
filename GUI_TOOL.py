@@ -5,6 +5,7 @@ from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output
 import Styles
+import Data_Handler as DH
 warnings.simplefilter("ignore", UserWarning)
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -49,18 +50,9 @@ app.layout = html.Div([dcc.Location(id="url"), sidebar, content],
      dash.dependencies.Input('Q_8', 'value'),
      dash.dependencies.Input('Q_9', 'value')])
 def update_output(n_clicks, value1, value2, value3, value4, value5, value6, value7, value8, value9):
-    print('*********************************************************************')
-    print(n_clicks)
-    print(value1)
-    print(value2)
-    print(value3)
-    print(value4)
-    print(value5)
-    print(value6)
-    print(value7)
-    print(value8)
-    print(value9)
-    print('*********************************************************************')
+    input_list = [value1, value2, value3, value4, value5, value6, value7, value8, value9]
+    if n_clicks > 0:
+        DH.SQL_populator(input_list)
 
 
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
