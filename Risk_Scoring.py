@@ -87,14 +87,14 @@ def risk_willingness_scoring():
         num_score = sum([Q1, Q2, Q3, Q4, Q5])
         return num_score
 
-    num_score = numeric_score()
-    if num_score <= 7:
-        return 'very low'
-    elif num_score <= 12:
-        return 'low'
-    elif num_score <= 17:
-        return 'medium'
-    elif num_score <= 22:
-        return 'high'
-    elif num_score > 22:
-        return 'very high'
+    rw_score = numeric_score()
+    if rw_score <= 7:
+        return 'very low', 1
+    elif rw_score <= 12:
+        return 'low', 2
+    elif rw_score <= 17:
+        return 'medium', 3
+    elif rw_score <= 22:
+        return 'high', 4
+    elif rw_score > 22:
+        return 'very high', 5
