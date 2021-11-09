@@ -1,5 +1,5 @@
 import sqlite3
-import pandas as pd
+import Risk_Scoring
 
 
 def SQL_populator(input_list):
@@ -25,6 +25,40 @@ def SQL_populator(input_list):
             connection.commit()
         except:
             None
+
+    try:
+        c.execute("""CREATE TABLE risk_scores (
+                    VariableName text,
+                    Value real
+                    )""")
+    except:
+        None
+
+    try:
+        c.execute(f"DELETE FROM risk_scores WHERE VariableName='risk_willingness_score'")
+        connection.commit()
+    except:
+        None
+    try:
+        c.execute("INSERT INTO risk_scores VALUES (:VariableName,:Value)",
+                  {'VariableName': 'risk_willingness_score', 'Value': Risk_Scoring.risk_willingness_scoring()[0]})
+        connection.commit()
+    except:
+        None
+
+    try:
+        c.execute(f"DELETE FROM risk_scores WHERE VariableName='risk_capacity_score'")
+        connection.commit()
+    except:
+        None
+    try:
+        c.execute("INSERT INTO risk_scores VALUES (:VariableName,:Value)",
+                  {'VariableName': 'risk_capacity_score', 'Value': Risk_Scoring.risk_capacity_scoring()[0]})
+        connection.commit()
+    except:
+        None
+
+
     connection.commit()
     connection.close()
 

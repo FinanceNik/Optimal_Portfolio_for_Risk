@@ -98,3 +98,80 @@ def risk_willingness_scoring():
         return 'high', 4
     elif rw_score > 22:
         return 'very high', 5
+
+
+##########################################################################
+def risk_capacity_scoring():
+
+    def liquidity():
+        answer = Weights('Question_6')
+        if answer == '< 20%':
+            return 1
+        elif answer == '20 - 40%':
+            return 2
+        elif answer == '40 - 60%':
+            return 3
+        elif answer == '60 - 80%':
+            return 4
+        elif answer == '> 80%':
+            return 5
+
+    def horizon():
+        answer = Weights('Question_7')
+        if answer == 'In less than 2 years.':
+            return 1
+        elif answer == 'In about 4 years.':
+            return 2
+        elif answer == 'In about 6 years.':
+            return 3
+        elif answer == 'Not within 10 years.':
+            return 4
+        elif answer == 'No time horizon less than 10 years.':
+            return 5
+
+    def savingsrate():
+        answer = Weights('Question_8')
+        if answer == 'I have higher costs than income.':
+            return 1
+        elif answer == 'My costs and income are equal.':
+            return 2
+        elif answer == 'My costs are slightly lower than income.':
+            return 3
+        elif answer == 'My costs are less than half of my income.':
+            return 4
+        elif answer == 'My income is significantly higher than my costs.':
+            return 5
+
+    def reserves():
+        answer = Weights('Question_9')
+        if answer == 'Less than 2 years.':
+            return 1
+        elif answer == '2 to 6 years.':
+            return 2
+        elif answer == '6 to 10 years.':
+            return 3
+        elif answer == '10 to 15 years.':
+            return 4
+        elif answer == 'More than 15 years.':
+            return 5
+
+    def numeric_score():
+        Q6 = liquidity()
+        Q7 = horizon()
+        Q8 = savingsrate()
+        Q9 = reserves()
+
+        num_score = sum([Q6, Q7, Q8, Q9])
+        return num_score
+
+    rc_score = numeric_score()
+    if rc_score <= 6:
+        return 'very low', 1
+    elif rc_score <= 9:
+        return 'low', 2
+    elif rc_score <= 13:
+        return 'medium', 3
+    elif rc_score <= 17:
+        return 'high', 4
+    elif rc_score > 20:
+        return 'very high', 5
