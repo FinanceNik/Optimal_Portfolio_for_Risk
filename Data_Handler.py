@@ -87,16 +87,27 @@ def SQL_Populator_Constraints_Minimums(value_list):
     except: pass
     for i in range(len(value_list)):
         try:
-            c.execute(f"DELETE FROM questionnaire WHERE VariableName='Asset_{i}'")
+            c.execute(f"DELETE FROM asset_minimums WHERE VariableName='Asset_{i}'")
             connection.commit()
         except: pass
         try:
-            c.execute("INSERT INTO questionnaire VALUES (:VariableName,:Value)",
+            c.execute("INSERT INTO asset_minimums VALUES (:VariableName,:Value)",
                       {'VariableName': f'Asset_{i}', 'Value': value_list[i]})
             connection.commit()
         except: pass
     connection.commit()
     connection.close()
+
+
+def questionnaire_answers(question):
+    c = sqlite3.connect('Test.db')
+    cur = c.cursor()
+    cur.execute(f"SELECT Value FROM questionnaire WHERE VariableName='{question}'")
+    one = cur.fetchone()
+    try:
+        return one[0]
+    except:
+        return "None"
 
 
 def show_table_x():
