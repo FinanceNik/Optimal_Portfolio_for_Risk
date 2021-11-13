@@ -38,6 +38,35 @@ app.layout = html.Div([dcc.Location(id="url"), sidebar, content],
 
 
 @app.callback(
+    Output("output-minimum", "value"),
+    Input("submit-minimum", "n_clicks"),
+    Input("Input-1", "value"),
+    Input("Input-2", "value"),
+    Input("Input-3", "value"),
+    Input("Input-4", "value"),
+    Input("Input-5", "value"),
+    Input("Input-6", "value"),
+    Input("Input-7", "value"),
+    Input("Input-8", "value"),
+
+)
+def output_minimum(n_clicks, value1, value2, value3, value4, value5, value6, value7, value8):
+    value_list = [value1, value2, value3, value4, value5, value6, value7, value8]
+    if n_clicks > 0:
+        print("Do Something")
+
+
+@app.callback(
+    Output("checklist-output", "value"),
+    Input("submit-assets", "n_clicks"),
+    Input("checklist", "value"),
+)
+def update_checklist(n_clicks, asset_list):
+    if n_clicks > 0:
+        print("Do Something")
+
+
+@app.callback(
     dash.dependencies.Output('dd-output-container', 'children'),
     [dash.dependencies.Input('submit', 'n_clicks'),
      dash.dependencies.Input('Q_1', 'value'),
@@ -219,9 +248,10 @@ def render_content(tab):
                 html.Hr(),
                 html.Div([
                     html.H5('Tick the assets that should be included in the client\'s portfolio.'),
-                ], style={'margin-left': '25%'}),
+                ], style={'margin-left': '30%'}),
                 html.Div([
                     dcc.Checklist(
+                        id="checklist",
                         options=[
                             {'label': '  Cash', 'value': 'CA'},
                             {'label': '  Bonds', 'value': 'BO'},
@@ -233,18 +263,96 @@ def render_content(tab):
                             {'label': '  Real Estate', 'value': 'RE'},
                         ], value=['CA', 'BO', 'BOFC', 'SE', 'GE', 'GES', 'EME', 'RE'],
                         labelStyle={'display': 'block'}
-                    )
+                    ),
+                    html.Div(id='checklist-output')
                 ], style={'width': f'{25}%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
                           'margin-left': '35%',
                           'font-size': '24px',
                           'box-shadow': '5px 4px 5px 5px lightgrey',
                           'borderRadius': '10px',
-                          'overflow': 'hidden'})
+                          'overflow': 'hidden'}
+                ),
+                html.Div([
+                    html.Button('Submit Asset Selection', id='submit-assets', n_clicks=0)
+                ], style={'width': f'{20}%', 'display': 'inline-block',
+                          'align': 'center', 'padding': '10px',
+                          'margin-left': '40%',
+                          'font-size': '24px'}),
+                html.Hr(),
+                html.Div([
+                    html.H5('Assign minimum values to each asset class.'),
+                ], style={'margin-left': '37%'}),
+                html.Div([
+                    html.I("Please only insert value if asset shall have a minimum otherwise leave blank!"),
+                ], style={'margin-left': '32.5%'}),
+                html.Div([
+                    html.I("Insert value as full number (if constraint shall be 20%, insert 20)!"),
+                ], style={'margin-left': '35%'}),
+                html.Br(),
+                html.Div([
+                    html.Div([
+                        dcc.Input(
+                            id="Input-1",
+                            type="text",
+                            placeholder="min. Cash"),
+                    ], style={"width": "100%"}),
+                    html.Div([
+                        dcc.Input(
+                            id="Input-2",
+                            type="text",
+                            placeholder="min. Bonds"),
+                    ], style={"width": "100%"}),
+                    html.Div([
+                        dcc.Input(
+                            id="Input-3",
+                            type="text",
+                            placeholder="min. Bonds FC (hedged)"),
+                    ], style={"width": "100%"}),
+                    html.Div([
+                        dcc.Input(
+                            id="Input-4",
+                            type="text",
+                            placeholder="min. Swiss Equity"),
+                    ], style={"width": "100%"}),
+                    html.Div([
+                        dcc.Input(
+                            id="Input-5",
+                            type="text",
+                            placeholder="min. Global Equity"),
+                    ], style={"width": "100%"}),
+                    html.Div([
+                        dcc.Input(
+                            id="Input-6",
+                            type="text",
+                            placeholder="min. Global Equity Small Cap"),
+                    ], style={"width": "100%"}),
+                    html.Div([
+                        dcc.Input(
+                            id="Input-7",
+                            type="text",
+                            placeholder="min. Emerging Markets Equity"),
+                    ], style={"width": "100%"}),
+                    html.Div([
+                        dcc.Input(
+                            id="Input-8",
+                            type="text",
+                            placeholder="min. Real Estate"),
+                    ], style={"width": "100%"}),
+                    html.Div(id="output-minimum")
+                ], style=Styles.INPUT_STYLE()),
+                html.Div([
+                    html.Button('Submit Minimum Selection', id='submit-minimum', n_clicks=0)
+                ], style={'width': f'{20}%', 'display': 'inline-block',
+                          'align': 'center', 'padding': '10px',
+                          'margin-left': '38.85%',
+                          'font-size': '24px'}),
             ])
         ])
     elif tab == 'tab-3':
         return html.Div([
-            html.H1('ZZ')
+            html.H1('Summary of your selection'),
+            html.H5('A portfolio will be created according to the following selection:')
+            html.Hr()
         ])
 
 

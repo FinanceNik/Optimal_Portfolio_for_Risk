@@ -53,11 +53,19 @@ SIDEBAR_STYLE = {
 CONTENT_STYLE = {"margin-left": "18rem", "margin-right": "2rem", "padding": "2rem 1rem"}
 
 
+def INPUT_STYLE():
+    return{'width': '16%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
+           'box-shadow': boxshadow,
+           'margin-left': '40%',
+           'borderRadius': '10px',
+           'overflow': 'hidden'}
+
+
 def STYLE(width):
     return{'width': f'{width}%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
-             'box-shadow': boxshadow,
-             'borderRadius': '10px',
-             'overflow': 'hidden'}
+           'box-shadow': boxshadow,
+           'borderRadius': '10px',
+           'overflow': 'hidden'}
 
 
 def STYLE_MINI():
