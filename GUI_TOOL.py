@@ -53,7 +53,7 @@ app.layout = html.Div([dcc.Location(id="url"), sidebar, content],
 def output_minimum(n_clicks, value1, value2, value3, value4, value5, value6, value7, value8):
     value_list = [value1, value2, value3, value4, value5, value6, value7, value8]
     if n_clicks > 0:
-        print("Do Something")
+        DH.SQL_Populator_Constraints_Assets(value_list)
 
 
 @app.callback(
@@ -61,9 +61,9 @@ def output_minimum(n_clicks, value1, value2, value3, value4, value5, value6, val
     Input("submit-assets", "n_clicks"),
     Input("checklist", "value"),
 )
-def update_checklist(n_clicks, asset_list):
+def update_checklist(n_clicks, value_list):
     if n_clicks > 0:
-        print("Do Something")
+        DH.SQL_Populator_Constraints_Minimums(value_list)
 
 
 @app.callback(
@@ -81,7 +81,7 @@ def update_checklist(n_clicks, asset_list):
 def update_output(n_clicks, value1, value2, value3, value4, value5, value6, value7, value8, value9):
     input_list = [value1, value2, value3, value4, value5, value6, value7, value8, value9]
     if n_clicks > 0:
-        DH.SQL_populator(input_list)
+        DH.SQL_Populator_Questionnaire(input_list)
 
 
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
@@ -351,7 +351,7 @@ def render_content(tab):
     elif tab == 'tab-3':
         return html.Div([
             html.H1('Summary of your selection'),
-            html.H5('A portfolio will be created according to the following selection:')
+            html.H5('A portfolio will be created according to the following selection:'),
             html.Hr()
         ])
 
