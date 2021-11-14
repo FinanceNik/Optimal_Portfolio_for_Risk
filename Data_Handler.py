@@ -82,16 +82,14 @@ def SQL_Populator_Constraints_Minimums(value_list):
     connection = sqlite3.connect('Test.db')
     c = connection.cursor()
     try:
+        c.execute("""DROP TABLE asset_minimums""")
+    except: pass
+    try:
         c.execute("""CREATE TABLE asset_minimums (
                     VariableName text,
                     Value real
                     )""")
     except: pass
-    try:
-        c.execute(f"DELETE * FROM asset_minimums")
-        connection.commit()
-    except: pass
-
     for i in range(len(value_list)):
         try:
             c.execute("INSERT INTO asset_minimums VALUES (:VariableName,:Value)",
@@ -138,10 +136,31 @@ def selected_assets():
     return data_table, in_list
 
 
+def selected_assets_minimums():
+    selected_list = []
+    c = sqlite3.connect('Test.db')
+    cur = c.cursor()
+    for i in range(8):
+        try:
+            cur.execute(f"SELECT Value FROM asset_minimums WHERE VariableName='Asset_{i}'")
+            one = cur.fetchone()
+            selected_list.append(one[0])
+        except:
+            selected_list.append("")
+    full_asset_name_list = [
+        "min. Cash", "min. Bonds", "min. Bonds FC (hedged)", "min. Swiss Equity",
+        "min. Global Equity", "min. Global Equity Small Cap", "min. Emerging Markets Equity", "min. Real Estate"
+    ]
+    data = {"Asset Class": full_asset_name_list,
+            "Selected": selected_list}
+    data_table = pd.DataFrame(data)
+    return data_table, selected_list
+
+
 def show_table_x():
     conn = sqlite3.connect('Test.db')
     cur = conn.cursor()
-    cur.execute("SELECT * FROM asset_constraints")
+    cur.execute("SELECT * FROM asset_minimums")
     colnames = cur.description
     for row in colnames:
         print(row[0])
