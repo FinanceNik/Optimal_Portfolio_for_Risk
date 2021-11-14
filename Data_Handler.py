@@ -1,4 +1,7 @@
 import sqlite3
+
+import pandas as pd
+
 import Risk_Scoring
 
 
@@ -57,6 +60,9 @@ def SQL_Populator_Constraints_Assets(value_list):
     connection = sqlite3.connect('Test.db')
     c = connection.cursor()
     try:
+        c.execute("""DROP TABLE asset_constraints""")
+    except: pass
+    try:
         c.execute("""CREATE TABLE asset_constraints (
                     VariableName text,
                     Value real
@@ -64,11 +70,7 @@ def SQL_Populator_Constraints_Assets(value_list):
     except: pass
     for i in range(len(value_list)):
         try:
-            c.execute(f"DELETE FROM questionnaire WHERE VariableName='Asset_{i}'")
-            connection.commit()
-        except: pass
-        try:
-            c.execute("INSERT INTO questionnaire VALUES (:VariableName,:Value)",
+            c.execute("INSERT INTO asset_constraints VALUES (:VariableName,:Value)",
                       {'VariableName': f'Asset_{i}', 'Value': value_list[i]})
             connection.commit()
         except: pass
@@ -85,11 +87,12 @@ def SQL_Populator_Constraints_Minimums(value_list):
                     Value real
                     )""")
     except: pass
+    try:
+        c.execute(f"DELETE * FROM asset_minimums")
+        connection.commit()
+    except: pass
+
     for i in range(len(value_list)):
-        try:
-            c.execute(f"DELETE FROM asset_minimums WHERE VariableName='Asset_{i}'")
-            connection.commit()
-        except: pass
         try:
             c.execute("INSERT INTO asset_minimums VALUES (:VariableName,:Value)",
                       {'VariableName': f'Asset_{i}', 'Value': value_list[i]})
@@ -110,10 +113,35 @@ def questionnaire_answers(question):
         return "None"
 
 
+def selected_assets():
+    full_asset_list = ['CA', 'BO', 'BOFC', 'SE', 'GE', 'GES', 'EME', 'RE']
+    selected_list = []
+    c = sqlite3.connect('Test.db')
+    cur = c.cursor()
+    for i in range(8):
+        try:
+            cur.execute(f"SELECT Value FROM asset_constraints WHERE VariableName='Asset_{i}'")
+            one = cur.fetchone()
+            selected_list.append(one[0])
+        except: pass
+    in_list = []
+    for i in full_asset_list:
+        is_in = i in selected_list
+        in_list.append(is_in)
+    full_asset_name_list = [
+        "Cash", "Bonds", "Bonds FC (hedged)", "Swiss Equity",
+        "Global Equity", "Global Equity Small Cap", "Emerging Markets Equity", "Real Estate"
+    ]
+    data = {"Asset Class": full_asset_name_list,
+            "Selected": in_list}
+    data_table = pd.DataFrame(data)
+    return data_table, in_list
+
+
 def show_table_x():
     conn = sqlite3.connect('Test.db')
     cur = conn.cursor()
-    cur.execute("SELECT * FROM questionnaire")
+    cur.execute("SELECT * FROM asset_constraints")
     colnames = cur.description
     for row in colnames:
         print(row[0])

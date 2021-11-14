@@ -3,6 +3,7 @@ import dash
 import dash_bootstrap_components as dbc
 from dash import dcc
 from dash import html
+from dash import dash_table
 from dash.dependencies import Input, Output
 import Styles
 import Data_Handler as dh
@@ -47,23 +48,20 @@ app.layout = html.Div([dcc.Location(id="url"), sidebar, content],
     Input("Input-5", "value"),
     Input("Input-6", "value"),
     Input("Input-7", "value"),
-    Input("Input-8", "value"),
-
-)
+    Input("Input-8", "value"))
 def output_minimum(n_clicks, value1, value2, value3, value4, value5, value6, value7, value8):
     value_list = [value1, value2, value3, value4, value5, value6, value7, value8]
     if n_clicks > 0:
-        dh.SQL_Populator_Constraints_Assets(value_list)
+        dh.SQL_Populator_Constraints_Minimums(value_list)
 
 
 @app.callback(
     Output("checklist-output", "value"),
     Input("submit-assets", "n_clicks"),
-    Input("checklist", "value"),
-)
+    Input("checklist", "value"))
 def update_checklist(n_clicks, value_list):
     if n_clicks > 0:
-        dh.SQL_Populator_Constraints_Minimums(value_list)
+        dh.SQL_Populator_Constraints_Assets(value_list)
 
 
 @app.callback(
@@ -233,11 +231,9 @@ def render_content(tab):
                 html.Hr(),
                 html.Div([
                     html.Button('Click to Submit', id='submit', n_clicks=0)
-                ], style={'width': f'{13}%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
+                ], style={'width': '11.4%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
                           'margin-left': '0%',
                           'font-size': '24px',
-                          'box-shadow': '5px 4px 5px 5px lightgrey',
-                          'borderRadius': '10px',
                           'overflow': 'hidden'})
             ])
         ])
@@ -404,6 +400,33 @@ def render_content(tab):
             html.Hr(),
             html.H3("The following asset classes have been selected:"),
             html.Br(),
+            html.Div([
+                dash_table.DataTable(
+                    id='stat_table',
+                    columns=[{'name': i, 'id': i} for i in dh.selected_assets()[0].columns],
+                    style_cell_conditional=[],
+                    style_as_list_view=False,
+                    style_cell={'padding': '5px', 'border-radius': '50px'},
+                    style_header={'backgroundColor': Styles.blues1, 'fontWeight': 'bold', 'color': 'white',
+                                  'border': '1px solid grey', 'height': '50px', 'font-size': '13px'},
+                    style_data_conditional=[{'if': {'row_index': 'odd'}, 'backgroundColor': '#DDEBF7'},
+                                            {'if': {'row_index': 'even'}, 'backgroundColor': '#F2F2F2'},
+                                            {'if': {'filter_query': '{Selected} contains false',
+                                                    'column_id': 'Selected'},
+                                             'backgroundColor': Styles.lightRed, 'color': 'black'},
+                                            {'if': {'filter_query': '{Selected} contains "true"',
+                                                    'column_id': 'Selected'},
+                                             'backgroundColor': Styles.lightGreen, 'color': 'black'},
+                                            ],
+                    style_table={'border': '1px solid lightgrey',
+                                 'borderRadius': '10px',
+                                 'overflow': 'hidden',
+                                 'box-shadow': '5px 4px 5px 5px lightgrey'},
+                    style_data={'border': '1px solid grey', 'font-size': '12px'},
+                    data=dh.selected_assets()[0].to_dict('records'),
+
+                )
+            ], style={"width": "30%"})
 
         ])
 
