@@ -22,7 +22,6 @@ sidebar = html.Div(
             [
                 dbc.NavLink("Welcome", href="/", active="exact"),
                 dbc.NavLink("Input Form", href="/input-form", active="exact"),
-                dbc.NavLink("Result", href="/result", active="exact"),
             ],
             vertical=True,
             pills=True,
@@ -36,6 +35,19 @@ content = html.Div(id="page-content", style=Styles.CONTENT_STYLE)
 
 app.layout = html.Div([dcc.Location(id="url"), sidebar, content],
                       style={'backgroundColor': 'white'})
+
+
+@app.callback(
+    Output("output-nav", "value"),
+    Input("submit-nav", "n_clicks"))
+def return_nav():
+    dbc.Nav(
+        [
+            dbc.NavLink("Result", href="/result", active="exact"),
+        ],
+        vertical=True,
+        pills=True,
+    ),
 
 
 @app.callback(
@@ -89,9 +101,48 @@ def render_page_content(pathname):
             html.H1('XX'),
         ])
 
-    elif pathname == "/result":
+    elif pathname == "/results":
         return html.Div(children=[
-            html.H1('XX')
+            html.Div([
+                html.H1('Personalized Portfolio Result'),
+            ], style={'width': '100%', 'display': 'inline-block', 'align': 'right', 'padding': Styles.graph_padding}),
+            html.Div([
+                Styles.kpiboxes('Risk Capacity Score:', '9999', Styles.accblue),
+                Styles.kpiboxes('Risk Adversity Score:', '9999', Styles.accblue),
+                Styles.kpiboxes('Portf. Expected Return:', '9999', Styles.accblue),
+                Styles.kpiboxes('Portf. Expected Volatiliy:', '9999', Styles.accblue),
+            ]),
+            html.Hr(),
+            html.Div([
+                dcc.Graph(
+                    id='Efficient Market Portfolio Graph',
+                    figure={'data': [{'x': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                                      'y': [0, 1, 2, 3, 4, 5, 6, 4, 2, 7, 8, 9, 4, 2, 9, 10],
+                                      'type': 'line', 'title': "Efficient Market Graph",
+                                      'marker': {'color': Styles.blues1},
+                                      'mode': 'lines',
+                                      'line': {'width': 8}}],
+                            'layout': {'title': 'Efficient Market Portfolio Graph',
+                                       'xaxis': {'title': 'Volatility'},
+                                       'yaxis': {'title': 'Return'}}}
+                ),
+            ], style=Styles.STYLE(49)),
+            html.Div([''], style=Styles.FILLER()),
+            html.Div([
+                dcc.Graph(
+                    id='Monte Carlo Analysis',
+                    figure={'data': [{'x': [0, 1, 2, 3, 4, 5, 6, 4, 2, 7, 8, 9, 4, 2, 9, 10],
+                                      'y': [0, 1, 2, 3, 4, 5, 6, 4, 2, 7, 8, 9, 4, 2, 9, 10],
+                                      'type': 'line', 'title': "Monte Carlo Analysis",
+                                      'marker': {'color': Styles.blues1},
+                                      'mode': 'lines',
+                                      'line': {'width': 8}}],
+                            'layout': {'title': 'Monte Carlo Analysis',
+                                       'xaxis': {'title': 'Years'},
+                                       'yaxis': {'title': 'Value Development'}}}
+                ),
+            ], style=Styles.STYLE(49)),
+            html.Hr(),
         ])
 
     elif pathname == "/input-form":
@@ -453,7 +504,20 @@ def render_content(tab):
                     data=dh.selected_assets_minimums()[0].to_dict('records'),
 
                 )
-            ], style={"width": "30%"})
+            ], style={"width": "30%"}),
+            html.Br(),
+            html.Div([
+                dbc.Nav(
+                    [
+                        dbc.NavLink("Results", href="/results", active="exact"),
+                    ],
+                    vertical=True,
+                    pills=True)
+            ], style={'width': '20%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
+                      'box-shadow': '5px 4px 5px 5px lightgrey', "font-size": "30px", "textAlign": "center",
+                      'borderRadius': '10px',
+                      'overflow': 'hidden'}),
+
 
         ])
 

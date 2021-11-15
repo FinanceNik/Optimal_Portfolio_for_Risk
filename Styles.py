@@ -88,7 +88,7 @@ def kpiboxes(id, formula, color):
             style_cell_conditional=[],
             style_as_list_view=False,
             style_cell={'padding': '10px', 'textAlign': 'left'},
-            style_header={'font-size': '18px',
+            style_header={'font-size': '22px',
                           'font-family': 'Calibri',
                           'border': '1px solid white',
                           'backgroundColor': color,
