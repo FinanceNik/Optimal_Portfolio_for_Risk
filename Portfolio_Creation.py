@@ -14,6 +14,8 @@ import pandas_datareader as web
 from datetime import datetime
 
 # This is the list of assets that are going to be used. ATM just dummies.
+import Styles
+
 assets_used = ['^GSPC', 'GC=F', 'GOOG']
 
 
@@ -99,11 +101,12 @@ def optimal_portfolio():
     max_sharpe_ratio = portfolios.iloc[((portfolios['Returns'] - rf) / portfolios['Volatility']).idxmax()]
 
     # The visualization of the efficient frontier.
-    plt.subplots(figsize=[10, 10])
-    plt.scatter(portfolios['Volatility'], portfolios['Returns'], marker='o', s=10, alpha=0.3)
+    plt.subplots(figsize=[10, 5])
+    plt.scatter(portfolios['Volatility'], portfolios['Returns'], color=Styles.accblue, marker='o', s=10, alpha=0.3)
     # plt.scatter(min_vol_port[1], min_vol_port[0], color='r', marker='*', s=500)
-    plt.scatter(max_sharpe_ratio[1], max_sharpe_ratio[0], color='g', marker='*', s=500)
-    # plt.show()
-    return portfolios['Volatility'], portfolios['Returns'], max_sharpe_ratio[1], max_sharpe_ratio[0]
+    plt.scatter(max_sharpe_ratio[1], max_sharpe_ratio[0], color='r', marker='*', s=500)
+    plt.title("Efficient Portfolio Frontier of Selected Assets")
+    plt.xlabel("Volatility")
+    plt.ylabel("Return")
+    plt.savefig("assets/portfolio.png", dpi=130)
 
-# optimal_portfolio()

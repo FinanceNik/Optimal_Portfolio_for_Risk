@@ -13,9 +13,6 @@ import Portfolio_Creation as pc
 import Risk_Scoring
 warnings.simplefilter("ignore", UserWarning)
 
-image_filename = os.getcwd() + '/image.png' # replace with your own image
-encoded_image = base64.b64encode(open(image_filename, 'rb').read())
-
 app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 
@@ -41,8 +38,10 @@ sidebar = html.Div(
 
 content = html.Div(id="page-content", style=Styles.CONTENT_STYLE)
 
-app.layout = html.Div([dcc.Location(id="url"), sidebar, content],
-                      style={'backgroundColor': 'white'})
+app.layout = html.Div([
+    html.Div([dcc.Location(id="url"), sidebar, content], style={'backgroundColor': 'white'}),
+    html.Div([dcc.ConfirmDialog(id='confirm-dialog', message="data submitted!")])
+])
 
 
 @app.callback(
@@ -101,18 +100,31 @@ def render_page_content(pathname):
             html.H1('About the Tool and the Creators...'),
             html.Hr(),
             html.Div([
-                html.Div([
-                    html.Img(src=app.get_asset_url('image.png'))
-                ], style={'height': '1%', 'width': '5%'}),
-            ], style={'width': f'{29.8}%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
+                html.Div([html.Img(src=app.get_asset_url('image.png'))], style={'width': f'{33}%', 'display': 'inline-block'}),
+                ], style={'width': f'{33}%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
+                          'box-shadow': Styles.boxshadow,
+                          'borderRadius': '10px',
+                          'overflow': 'hidden'}),
+            html.Div([], style={'width': f'{1}%', 'display': 'inline-block'}),
+            html.Div([
+                html.Div([html.Img(src=app.get_asset_url('image.png'))],
+                         style={'width': f'{33}%', 'display': 'inline-block'}),
+            ], style={'width': f'{33}%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
                       'box-shadow': Styles.boxshadow,
                       'borderRadius': '10px',
                       'overflow': 'hidden'}),
+            html.Div([], style={'width': f'{20}%', 'display': 'inline-block'}),
             html.Div([
                 html.Div([html.I("HSLU")], style={'textAlign': 'center'}),
                 html.Div([html.I("MSc Banking & Finance")], style={'textAlign': 'center'}),
                 html.Div([html.I("3rd Semester")], style={'textAlign': 'center'}),
-            ], style={'textAlign': 'center', 'width': '29.8%'}),
+            ], style={'textAlign': 'center', 'width': '33%', 'display': 'inline-block'}),
+            html.Div([], style={'width': f'{1}%', 'display': 'inline-block'}),
+            html.Div([
+                html.Div([html.I("HSLU")], style={'textAlign': 'center'}),
+                html.Div([html.I("MSc Banking & Finance")], style={'textAlign': 'center'}),
+                html.Div([html.I("3rd Semester")], style={'textAlign': 'center'}),
+            ], style={'textAlign': 'center', 'width': '33%', 'display': 'inline-block'}),
         ])
 
     elif pathname == "/results":
@@ -123,15 +135,24 @@ def render_page_content(pathname):
             html.Div([
                 Styles.kpiboxes('Risk Capacity Score:', Risk_Scoring.risk_willingness_scoring()[0], Styles.accblue),
                 Styles.kpiboxes('Risk Adversity Score:', Risk_Scoring.risk_capacity_scoring()[0], Styles.accblue),
-                Styles.kpiboxes('Portf. Expected Return:', pc.optimal_portfolio()[2], Styles.accblue),
-                Styles.kpiboxes('Portf. Expected Volatiliy:', pc.optimal_portfolio()[3], Styles.accblue),
+                Styles.kpiboxes('Portf. Expected Return:', 'pc.optimal_portfolio()[0]', Styles.accblue),
+                Styles.kpiboxes('Portf. Expected Volatiliy:', 'pc.optimal_portfolio()[1]', Styles.accblue),
             ]),
+            html.Hr(),
+            html.Div([
+                html.Div([
+                    html.Img(src=app.get_asset_url('portfolio.png'))
+                ], style={'height': '1%', 'width': '5%'}),
+            ], style={'width': f'{100}%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
+                      'box-shadow': Styles.boxshadow,
+                      'borderRadius': '10px',
+                      'overflow': 'hidden'}),
             html.Hr(),
             html.Div([
                 dcc.Graph(
                     id='Efficient Market Portfolio Graph',
-                    figure={'data': [{'x': pc.optimal_portfolio()[0],
-                                      'y': pc.optimal_portfolio()[1],
+                    figure={'data': [{'x': [0, 1, 2, 3, 4, 5, 6, 4, 2, 7, 8, 9, 4, 2, 9, 10],
+                                      'y': [0, 1, 2, 3, 4, 5, 6, 4, 2, 7, 8, 9, 4, 2, 9, 10],
                                       'type': 'line', 'title': "Efficient Market Graph",
                                       'marker': {'color': Styles.accblue},
                                       'mode': 'markers'}],
