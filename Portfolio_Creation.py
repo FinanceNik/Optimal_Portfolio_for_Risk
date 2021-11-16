@@ -14,34 +14,18 @@ import pandas_datareader as web
 from datetime import datetime
 
 # This is the list of assets that are going to be used. ATM just dummies.
-assets_used = ['NKE', 'AMZN', 'GOOG']
+assets_used = ['^GSPC', 'GC=F', 'GOOG']
 
 
-# This is the function that will be responsible for getting the data and converting it to a pandas dataframe.
-# The dataframe allows us to manipulate the data as wanted and is probably the easiest way to work with large datasets
-# in Python. Right now I am importing data from the yahoo API engine just to create the algorithms.
-# This is just dummy data.
-def raw_data_gatherer():
+def data_prepper():
     start = datetime(2015, 1, 1)
     end = datetime(2019, 12, 31)
     tickers = assets_used
-    dfs = []
+    dfs_raw = []
     for ticker in tickers:
         stock = web.DataReader(ticker, "yahoo", start, end)
-        dfs.append(stock)
-    return dfs
-
-
-# This function takes the raw data gathered by the raw_data_gatherer function and then manipulated it.
-# Firstly, the adjusted close columns is renamed to Adjusted to that no spaces are in the name. That could otherwise
-# lead to some errors when working with pandas functions down the line.
-# Furthermore, we calculate the period log return (in this case 1-month return) for each period with the
-# pandas.pct_change to get the actual change per period. Then we calculate the log return by using the numpy.log
-# function. Afterwards, we calculate the excess return of each period by getting the average period log return overall
-# and subtracting that from the one period change. Lastly, the newly adjusted dataframes are returned so we can use
-# them for other functions.
-def data_prepper():
-    assets = raw_data_gatherer()
+        dfs_raw.append(stock)
+    assets = dfs_raw
     dfs = []
     for i in range(len(assets)):
         df_raw = assets[i]
@@ -58,25 +42,8 @@ def data_prepper():
             return excess
 
         df['Excess'] = df['LogReturn'].apply(excess_calculator)
-
         dfs.append(df)
-
     return dfs
-
-
-# Creation of the Covariance Matrix. This is important for later portfolio optimization.
-def covariance_matrix():
-    assets = data_prepper()
-    names = assets_used
-    dfs = []
-    for i in range(len(assets)):
-        df_raw = assets[i]['Excess']
-        df = df_raw.rename(f'{names[i]}')
-        dfs.append(df)
-
-    df = pd.concat(dfs, axis=1, ignore_index=False)
-    cov_matrix = df.cov()
-    return cov_matrix
 
 
 # This function creates a portfolio with fixed weights (for now). It is just for testing purposes but it spits out a
@@ -85,11 +52,20 @@ def optimal_portfolio():
     assets = data_prepper()
     names = assets_used
     dfs = []
-    for i in range(len(assets)):
-        df_raw = assets[i]['Adjusted']
-        df = df_raw.rename(f'{names[i]}')
+    for asset in range(len(assets)):
+        df_raw = assets[asset]['Adjusted']
+        df = df_raw.rename(f'{names[asset]}')
         dfs.append(df)
     df = pd.concat(dfs, axis=1, ignore_index=False)
+
+    def covariance_matrix():
+        dfs_cov = []
+        for i in range(len(assets)):
+            df_cov_raw = assets[i]['Excess']
+            df = df_cov_raw.rename(f'{names[i]}')
+            dfs_cov.append(df)
+        return pd.concat(dfs_cov, axis=1, ignore_index=False).cov()
+
     cov_matrix = covariance_matrix()
     ind_er = df.resample('Y').last().pct_change().mean()
 
@@ -98,7 +74,7 @@ def optimal_portfolio():
     p_weights = []
 
     num_assets = len(df.columns)
-    num_portfolios = 10000
+    num_portfolios = 1000
 
     for portfolio in range(num_portfolios):
         weights = np.random.random(num_assets)
@@ -125,16 +101,9 @@ def optimal_portfolio():
     # The visualization of the efficient frontier.
     plt.subplots(figsize=[10, 10])
     plt.scatter(portfolios['Volatility'], portfolios['Returns'], marker='o', s=10, alpha=0.3)
-    plt.scatter(min_vol_port[1], min_vol_port[0], color='r', marker='*', s=500)
+    # plt.scatter(min_vol_port[1], min_vol_port[0], color='r', marker='*', s=500)
     plt.scatter(max_sharpe_ratio[1], max_sharpe_ratio[0], color='g', marker='*', s=500)
-    plt.show()
+    # plt.show()
+    return portfolios['Volatility'], portfolios['Returns'], max_sharpe_ratio[1], max_sharpe_ratio[0]
 
-
-optimal_portfolio()
-
-
-
-
-
-
-
+# optimal_portfolio()

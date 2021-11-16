@@ -1,3 +1,5 @@
+import base64
+import os
 import warnings
 import dash
 import dash_bootstrap_components as dbc
@@ -7,7 +9,12 @@ from dash import dash_table
 from dash.dependencies import Input, Output
 import Styles
 import Data_Handler as dh
+import Portfolio_Creation as pc
+import Risk_Scoring
 warnings.simplefilter("ignore", UserWarning)
+
+image_filename = os.getcwd() + '/image.png' # replace with your own image
+encoded_image = base64.b64encode(open(image_filename, 'rb').read())
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -22,6 +29,7 @@ sidebar = html.Div(
             [
                 dbc.NavLink("Welcome", href="/", active="exact"),
                 dbc.NavLink("Input Form", href="/input-form", active="exact"),
+                dbc.NavLink("About", href="/about", active="exact"),
             ],
             vertical=True,
             pills=True,
@@ -35,19 +43,6 @@ content = html.Div(id="page-content", style=Styles.CONTENT_STYLE)
 
 app.layout = html.Div([dcc.Location(id="url"), sidebar, content],
                       style={'backgroundColor': 'white'})
-
-
-@app.callback(
-    Output("output-nav", "value"),
-    Input("submit-nav", "n_clicks"))
-def return_nav():
-    dbc.Nav(
-        [
-            dbc.NavLink("Result", href="/result", active="exact"),
-        ],
-        vertical=True,
-        pills=True,
-    ),
 
 
 @app.callback(
@@ -101,27 +96,45 @@ def render_page_content(pathname):
             html.H1('XX'),
         ])
 
+    if pathname == "/about":
+        return html.Div(children=[
+            html.H1('About the Tool and the Creators...'),
+            html.Hr(),
+            html.Div([
+                html.Div([
+                    html.Img(src=app.get_asset_url('image.png'))
+                ], style={'height': '1%', 'width': '5%'}),
+            ], style={'width': f'{29.8}%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
+                      'box-shadow': Styles.boxshadow,
+                      'borderRadius': '10px',
+                      'overflow': 'hidden'}),
+            html.Div([
+                html.Div([html.I("HSLU")], style={'textAlign': 'center'}),
+                html.Div([html.I("MSc Banking & Finance")], style={'textAlign': 'center'}),
+                html.Div([html.I("3rd Semester")], style={'textAlign': 'center'}),
+            ], style={'textAlign': 'center', 'width': '29.8%'}),
+        ])
+
     elif pathname == "/results":
         return html.Div(children=[
             html.Div([
                 html.H1('Personalized Portfolio Result'),
             ], style={'width': '100%', 'display': 'inline-block', 'align': 'right', 'padding': Styles.graph_padding}),
             html.Div([
-                Styles.kpiboxes('Risk Capacity Score:', '9999', Styles.accblue),
-                Styles.kpiboxes('Risk Adversity Score:', '9999', Styles.accblue),
-                Styles.kpiboxes('Portf. Expected Return:', '9999', Styles.accblue),
-                Styles.kpiboxes('Portf. Expected Volatiliy:', '9999', Styles.accblue),
+                Styles.kpiboxes('Risk Capacity Score:', Risk_Scoring.risk_willingness_scoring()[0], Styles.accblue),
+                Styles.kpiboxes('Risk Adversity Score:', Risk_Scoring.risk_capacity_scoring()[0], Styles.accblue),
+                Styles.kpiboxes('Portf. Expected Return:', pc.optimal_portfolio()[2], Styles.accblue),
+                Styles.kpiboxes('Portf. Expected Volatiliy:', pc.optimal_portfolio()[3], Styles.accblue),
             ]),
             html.Hr(),
             html.Div([
                 dcc.Graph(
                     id='Efficient Market Portfolio Graph',
-                    figure={'data': [{'x': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-                                      'y': [0, 1, 2, 3, 4, 5, 6, 4, 2, 7, 8, 9, 4, 2, 9, 10],
+                    figure={'data': [{'x': pc.optimal_portfolio()[0],
+                                      'y': pc.optimal_portfolio()[1],
                                       'type': 'line', 'title': "Efficient Market Graph",
-                                      'marker': {'color': Styles.blues1},
-                                      'mode': 'lines',
-                                      'line': {'width': 8}}],
+                                      'marker': {'color': Styles.accblue},
+                                      'mode': 'markers'}],
                             'layout': {'title': 'Efficient Market Portfolio Graph',
                                        'xaxis': {'title': 'Volatility'},
                                        'yaxis': {'title': 'Return'}}}
@@ -134,7 +147,7 @@ def render_page_content(pathname):
                     figure={'data': [{'x': [0, 1, 2, 3, 4, 5, 6, 4, 2, 7, 8, 9, 4, 2, 9, 10],
                                       'y': [0, 1, 2, 3, 4, 5, 6, 4, 2, 7, 8, 9, 4, 2, 9, 10],
                                       'type': 'line', 'title': "Monte Carlo Analysis",
-                                      'marker': {'color': Styles.blues1},
+                                      'marker': {'color': Styles.accblue},
                                       'mode': 'lines',
                                       'line': {'width': 8}}],
                             'layout': {'title': 'Monte Carlo Analysis',
