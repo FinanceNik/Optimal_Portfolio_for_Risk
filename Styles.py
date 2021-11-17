@@ -31,12 +31,12 @@ HEIGHT = 250
 boxshadow = '5px 4px 5px 5px lightgrey'
 
 TAB_STYLE = {'box-shadow': boxshadow,
-                      'border-style': '',
-                      'border-color': greys[2],
-                      'font-size': '20px',
-                      'color': greys[2],
-                      "background-color": greys[0],
-                      'borderRadius': '15px'}
+             'border-style': '',
+             'border-color': greys[2],
+             'font-size': '20px',
+             'color': greys[2],
+             "background-color": greys[0],
+             'borderRadius': '15px'}
 
 SIDEBAR_STYLE = {
     "position": "fixed",
@@ -54,7 +54,7 @@ CONTENT_STYLE = {"margin-left": "18rem", "margin-right": "2rem", "padding": "2re
 
 
 def INPUT_STYLE():
-    return{'width': '16%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
+    return{'width': '17.5%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
            'box-shadow': boxshadow,
            'margin-left': '40%',
            'borderRadius': '10px',
