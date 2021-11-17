@@ -111,6 +111,23 @@ def render_page_content(pathname):
         return html.Div(children=[
             html.H1('Optimal Portfolio Creation and Automation Tool'),
             html.Hr(),
+            html.Br(),
+            html.Div([
+                html.I("Start the Customer Process:"),
+            ], style={'font-size': '20px', 'textAlign': 'center'}),
+            html.Div([
+                dbc.Nav(
+                    [
+                        dbc.NavLink("Start", href="/input-form", active="exact"),
+                    ],
+                    vertical=True,
+                    pills=True)
+            ], style={'margin-left': '40%',
+                      'display': 'flex', 'fontWeight': 'bold', 'align-items': 'center', 'justify-content': 'center',
+                      'width': '20%', 'align': 'center', 'padding': '10px',
+                      'box-shadow': '5px 4px 5px 5px lightgrey', "font-size": "30px", "textAlign": "center",
+                      'borderRadius': '10px',
+                      'overflow': 'hidden'}),
 
         ])
 
