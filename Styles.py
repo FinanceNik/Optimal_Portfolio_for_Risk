@@ -54,9 +54,9 @@ CONTENT_STYLE = {"margin-left": "18rem", "margin-right": "2rem", "padding": "2re
 
 
 def INPUT_STYLE():
-    return{'width': '17.5%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
-           'box-shadow': boxshadow,
-           'margin-left': '40%',
+    return{'width': '50%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
+           'box-shadow': '',
+           'margin-left': '33%',
            'borderRadius': '10px',
            'overflow': 'hidden'}
 

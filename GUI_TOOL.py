@@ -45,6 +45,23 @@ app.layout = html.Div([
 
 
 @app.callback(
+    Output("output-maximum", "value"),
+    Input("submit-maximum", "n_clicks"),
+    Input("Input-max-1", "value"),
+    Input("Input-max-2", "value"),
+    Input("Input-max-3", "value"),
+    Input("Input-max-4", "value"),
+    Input("Input-max-5", "value"),
+    Input("Input-max-6", "value"),
+    Input("Input-max-7", "value"),
+    Input("Input-max-8", "value"))
+def output_maximum(n_clicks, value1, value2, value3, value4, value5, value6, value7, value8):
+    value_list = [value1, value2, value3, value4, value5, value6, value7, value8]
+    if n_clicks > 0:
+        print("Dicks")
+
+
+@app.callback(
     Output("output-minimum", "value"),
     Input("submit-minimum", "n_clicks"),
     Input("Input-1", "value"),
@@ -180,6 +197,7 @@ def render_page_content(pathname):
                     html.Br(),
                     'that fits within a volatility bracket.',
                         ]),
+                html.Hr()
             ], style={'textAlign': 'center', 'width': '100%', 'display': 'inline-block'}),
         ])
 
@@ -383,108 +401,185 @@ def render_content(tab):
             html.Div([
                 html.H2('Please select the portfolio constraints.'),
                 html.Hr(),
+            ]),
+            html.Div([
                 html.Div([
                     html.H5('Tick the assets that should be included in the client\'s portfolio.'),
-                ], style={'margin-left': '30%'}),
+                ], style={'textAlign': 'center'}),
                 html.Div([
-                    dcc.Checklist(
-                        id="checklist",
-                        options=[
-                            {'label': '  Cash', 'value': 'CA'},
-                            {'label': '  Bonds', 'value': 'BO'},
-                            {'label': '  Bonds FC (hedged)', 'value': 'BOFC'},
-                            {'label': '  Swiss Equity', 'value': 'SE'},
-                            {'label': '  Global Equity', 'value': 'GE'},
-                            {'label': '  Global Equity Small Cap', 'value': 'GES'},
-                            {'label': '  Emerging Markets Equity', 'value': 'EME'},
-                            {'label': '  Real Estate', 'value': 'RE'},
-                        ], value=['CA', 'BO', 'BOFC', 'SE', 'GE', 'GES', 'EME', 'RE'],
-                        labelStyle={'display': 'block'}
-                    ),
-                    html.Div(id='checklist-output')
-                ], style={'width': f'{25}%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
-                          'margin-left': '35%',
-                          'font-size': '24px',
-                          'box-shadow': '5px 4px 5px 5px lightgrey',
-                          'borderRadius': '10px',
-                          'overflow': 'hidden'}
-                ),
+                    html.Div([
+                        dcc.Checklist(
+                            id="checklist",
+                            options=[
+                                {'label': '  Cash', 'value': 'CA'},
+                                {'label': '  Bonds', 'value': 'BO'},
+                                {'label': '  Bonds FC (hedged)', 'value': 'BOFC'},
+                                {'label': '  Swiss Equity', 'value': 'SE'},
+                                {'label': '  Global Equity', 'value': 'GE'},
+                                {'label': '  Global Equity Small Cap', 'value': 'GES'},
+                                {'label': '  Emerging Markets Equity', 'value': 'EME'},
+                                {'label': '  Real Estate', 'value': 'RE'},
+                            ], value=['CA', 'BO', 'BOFC', 'SE', 'GE', 'GES', 'EME', 'RE'],
+                            labelStyle={'display': 'block'}
+                        ),
+                        html.Div(id='checklist-output')])
+                    ], style={'width': f'{18}%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
+                              'margin-left': '41%',
+                              'box-shadow': Styles.boxshadow,
+                              'borderRadius': '10px',
+                              'font-size': '20px',
+                              'overflow': 'hidden'}),
                 html.Div([
                     html.Button('Submit Asset Selection', id='submit-assets', n_clicks=0)
-                ], style={'width': f'{20}%', 'display': 'inline-block',
-                          'align': 'center', 'padding': '10px',
-                          'margin-left': '40%',
-                          'font-size': '24px'}),
-                html.Hr(),
+                        ], style={'width': f'{20}%', 'display': 'inline-block',
+                                  'margin-left': '41%',
+                                  'align': 'center', 'padding': '10px',
+                                  'font-size': '24px'}),
+            ]),
+            html.Hr(),
+            html.Div([
+                html.H5('Assign minimum and maximum values to each asset class.')
+            ], style={'textAlign': 'center'}),
+            html.Div([
+                html.I('Please only insert value if asset shall have a minimum otherwise leave blank!')
+            ], style={'textAlign': 'center'}),
+            html.Div([
+                html.I('Insert value as full number (if constraint shall be 20%, insert 20)!')
+            ], style={'textAlign': 'center'}),
+            html.Br(),
+            html.Div([
+                html.Div([], style={'width': f'{12}%', 'display': 'inline-block'}),
                 html.Div([
-                    html.H5('Assign minimum values to each asset class.'),
-                ], style={'margin-left': '37%'}),
+                    html.Div([
+                        html.H6('Minimums:')
+                    ], style={'textAlign': 'center'}),
+                    html.Br(),
+                    html.Div([
+                        html.Div([
+                            dcc.Input(
+                                id="Input-1",
+                                type="text",
+                                placeholder="min. Cash"),
+                        ], style={"width": "100%"}),
+                        html.Div([
+                            dcc.Input(
+                                id="Input-2",
+                                type="text",
+                                placeholder="min. Bonds"),
+                        ], style={"width": "100%"}),
+                        html.Div([
+                            dcc.Input(
+                                id="Input-3",
+                                type="text",
+                                placeholder="min. Bonds FC (hedged)"),
+                        ], style={"width": "100%"}),
+                        html.Div([
+                            dcc.Input(
+                                id="Input-4",
+                                type="text",
+                                placeholder="min. Swiss Equity"),
+                        ], style={"width": "100%"}),
+                        html.Div([
+                            dcc.Input(
+                                id="Input-5",
+                                type="text",
+                                placeholder="min. Global Equity"),
+                        ], style={"width": "100%"}),
+                        html.Div([
+                            dcc.Input(
+                                id="Input-6",
+                                type="text",
+                                placeholder="min. Global Equity Small Cap"),
+                        ], style={"width": "100%"}),
+                        html.Div([
+                            dcc.Input(
+                                id="Input-7",
+                                type="text",
+                                placeholder="min. Emerging Markets Equity"),
+                        ], style={"width": "100%"}),
+                        html.Div([
+                            dcc.Input(
+                                id="Input-8",
+                                type="text",
+                                placeholder="min. Real Estate"),
+                        ], style={"width": "100%"}),
+                        html.Div(id="output-minimum")
+                    ], style={'margin-left': '27%'}),
+                    html.Div([
+                        html.Button('Submit Minimum Selection', id='submit-minimum', n_clicks=0)
+                    ], style={'width': f'{100}%', 'display': 'inline-block',
+                              'align': 'center', 'padding': '10px',
+                              'textAlign': 'center',
+                              'font-size': '24px'}),
+                ], style=Styles.STYLE(35)),
+                html.Div([], style={'width': f'{5}%', 'display': 'inline-block'}),
                 html.Div([
-                    html.I("Please only insert value if asset shall have a minimum otherwise leave blank!"),
-                ], style={'margin-left': '32.5%'}),
-                html.Div([
-                    html.I("Insert value as full number (if constraint shall be 20%, insert 20)!"),
-                ], style={'margin-left': '35%'}),
-                html.Br(),
-                html.Div([
                     html.Div([
-                        dcc.Input(
-                            id="Input-1",
-                            type="text",
-                            placeholder="min. Cash"),
-                    ], style={"width": "100%"}),
+                        html.H6('Maximums:')
+                    ], style={'textAlign': 'center'}),
+                    html.Br(),
                     html.Div([
-                        dcc.Input(
-                            id="Input-2",
-                            type="text",
-                            placeholder="min. Bonds"),
-                    ], style={"width": "100%"}),
+                        html.Div([
+                            dcc.Input(
+                                id="Input-max-1",
+                                type="text",
+                                placeholder="max. Cash"),
+                        ], style={"width": "100%"}),
+                        html.Div([
+                            dcc.Input(
+                                id="Input-max-2",
+                                type="text",
+                                placeholder="max. Bonds"),
+                        ], style={"width": "100%"}),
+                        html.Div([
+                            dcc.Input(
+                                id="Input-max-3",
+                                type="text",
+                                placeholder="max. Bonds FC (hedged)"),
+                        ], style={"width": "100%"}),
+                        html.Div([
+                            dcc.Input(
+                                id="Input-max-4",
+                                type="text",
+                                placeholder="max. Swiss Equity"),
+                        ], style={"width": "100%"}),
+                        html.Div([
+                            dcc.Input(
+                                id="Input-max-5",
+                                type="text",
+                                placeholder="max. Global Equity"),
+                        ], style={"width": "100%"}),
+                        html.Div([
+                            dcc.Input(
+                                id="Input-max-6",
+                                type="text",
+                                placeholder="max. Global Equity Small Cap"),
+                        ], style={"width": "100%"}),
+                        html.Div([
+                            dcc.Input(
+                                id="Input-max-7",
+                                type="text",
+                                placeholder="max. Emerging Markets Equity"),
+                        ], style={"width": "100%"}),
+                        html.Div([
+                            dcc.Input(
+                                id="Input-max-8",
+                                type="text",
+                                placeholder="max. Real Estate"),
+                        ], style={"width": "100%"}),
+                        html.Div(id="output-maximum")
+                    ], style={'margin-left': '27%'}),
                     html.Div([
-                        dcc.Input(
-                            id="Input-3",
-                            type="text",
-                            placeholder="min. Bonds FC (hedged)"),
-                    ], style={"width": "100%"}),
-                    html.Div([
-                        dcc.Input(
-                            id="Input-4",
-                            type="text",
-                            placeholder="min. Swiss Equity"),
-                    ], style={"width": "100%"}),
-                    html.Div([
-                        dcc.Input(
-                            id="Input-5",
-                            type="text",
-                            placeholder="min. Global Equity"),
-                    ], style={"width": "100%"}),
-                    html.Div([
-                        dcc.Input(
-                            id="Input-6",
-                            type="text",
-                            placeholder="min. Global Equity Small Cap"),
-                    ], style={"width": "100%"}),
-                    html.Div([
-                        dcc.Input(
-                            id="Input-7",
-                            type="text",
-                            placeholder="min. Emerging Markets Equity"),
-                    ], style={"width": "100%"}),
-                    html.Div([
-                        dcc.Input(
-                            id="Input-8",
-                            type="text",
-                            placeholder="min. Real Estate"),
-                    ], style={"width": "100%"}),
-                    html.Div(id="output-minimum")
-                ], style=Styles.INPUT_STYLE()),
-                html.Div([
-                    html.Button('Submit Minimum Selection', id='submit-minimum', n_clicks=0)
-                ], style={'width': f'{20}%', 'display': 'inline-block',
-                          'align': 'center', 'padding': '10px',
-                          'margin-left': '38.85%',
-                          'font-size': '24px'}),
+                        html.Button('Submit Maximum Selection', id='submit-maximum', n_clicks=0)
+                    ], style={'width': f'{100}%', 'display': 'inline-block',
+                              'align': 'center', 'padding': '10px',
+                              'textAlign': 'center',
+                              'font-size': '24px'}),
+                ], style=Styles.STYLE(35)),
+                html.Div([], style={'width': f'{5}%', 'display': 'inline-block'}),
             ])
         ])
+
     elif tab == 'tab-3':
         return html.Div([
             html.H1('Summary of your selection'),
