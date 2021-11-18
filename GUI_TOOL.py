@@ -109,9 +109,14 @@ def update_output(n_clicks, value1, value2, value3, value4, value5, value6, valu
 def render_page_content(pathname):
     if pathname == "/":
         return html.Div(children=[
-            html.H1('Optimal Portfolio Creation and Automation Tool'),
+            html.Div([html.H1('Optimal Portfolio Creation and Automation Tool')], style={'textAlign': 'center'}),
             html.Hr(),
-            html.Br(),
+            html.Div([
+                html.Div(['By using this tool, the customer`s risk capacity as well as risk adversity are defined.']),
+                html.Div(['Furthermore, the above-mentioned metrics are separated numerically scored.']),
+                html.Div(['Lastly, an algorithm will create the best possible portfolio for the selection.']),
+            ], style={"font-size": "20px", "textAlign": "center"}),
+            html.Hr(),
             html.Div([
                 html.I("Start the Customer Process:"),
             ], style={'font-size': '20px', 'textAlign': 'center'}),
@@ -410,15 +415,16 @@ def render_content(tab):
                 ], style={'width': '11.4%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
                           'margin-left': '0%',
                           'font-size': '24px',
-                          'overflow': 'hidden'})
-            ])
+                          'overflow': 'hidden'}),
+                html.Hr()
+            ], style={'textAlign': 'center'})
         ])
     elif tab == 'tab-2':
         return html.Div([
             html.Div([
                 html.H2('Please select the portfolio constraints.'),
                 html.Hr(),
-            ]),
+            ], style={'textAlign': 'center'}),
             html.Div([
                 html.Div([
                     html.H5('Tick the assets that should be included in the client\'s portfolio.'),
@@ -594,6 +600,7 @@ def render_content(tab):
                               'font-size': '24px'}),
                 ], style=Styles.STYLE(35)),
                 html.Div([], style={'width': f'{5}%', 'display': 'inline-block'}),
+                html.Hr()
             ])
         ])
 
@@ -679,7 +686,7 @@ def render_content(tab):
                     data=dh.selected_assets()[0].to_dict('records'),
 
                 )
-            ], style={"width": "30%"}),
+            ], style={"width": "30%", 'margin-left': '34.5%'}),
             html.Hr(),
             html.H3("The following minimum values for each asset class have been selected:"),
             html.Br(),
@@ -706,7 +713,7 @@ def render_content(tab):
                     data=dh.selected_assets_minimums()[0].to_dict('records'),
 
                 )
-            ], style={"width": "30%"}),
+            ], style={"width": "30%", 'align': 'center', 'margin-left': '34.5%'}),
             html.Br(),
             html.Div([
                 dbc.Nav(
@@ -719,9 +726,10 @@ def render_content(tab):
                       'box-shadow': '5px 4px 5px 5px lightgrey', "font-size": "30px", "textAlign": "center",
                       'borderRadius': '10px',
                       'overflow': 'hidden'}),
+            html.Hr()
 
 
-        ])
+        ], style={'textAlign': 'center'})
 
 
 if __name__ == "__main__":
