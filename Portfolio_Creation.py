@@ -85,14 +85,15 @@ def optimal_portfolio():
     max_sharpe_ratio = portfolios.iloc[((portfolios['Returns'] - rf) / portfolios['Volatility']).idxmax()]
 
     # The visualization of the efficient frontier.
-    plt.subplots(figsize=[10, 5])
-    plt.scatter(portfolios['Volatility'], portfolios['Returns'], color=Styles.accblue, marker='o', s=10, alpha=0.3)
-    # plt.scatter(min_vol_port[1], min_vol_port[0], color='r', marker='*', s=500)
-    plt.scatter(max_sharpe_ratio[1], max_sharpe_ratio[0], color='r', marker='*', s=500)
-    plt.title("Efficient Portfolio Frontier of Selected Assets")
-    plt.xlabel("Volatility")
-    plt.ylabel("Return")
+    # plt.subplots(figsize=[10, 5])
+    # plt.scatter(portfolios['Volatility'], portfolios['Returns'], color=Styles.accblue, marker='o', s=10, alpha=0.3)
+    # # plt.scatter(min_vol_port[1], min_vol_port[0], color='r', marker='*', s=500)
+    # plt.scatter(max_sharpe_ratio[1], max_sharpe_ratio[0], color='r', marker='*', s=500)
+    # plt.title("Efficient Portfolio Frontier of Selected Assets")
+    # plt.xlabel("Volatility")
+    # plt.ylabel("Return")
     # plt.savefig("assets/portfolio.png", dpi=130)
-    plt.show()
+    # plt.show()
+    return max_sharpe_ratio[1], max_sharpe_ratio[0]
 
 

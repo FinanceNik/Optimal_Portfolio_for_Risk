@@ -231,8 +231,8 @@ def render_page_content(pathname):
             html.Div([
                 Styles.kpiboxes('Risk Capacity Score:', Risk_Scoring.risk_willingness_scoring()[0], Styles.accblue),
                 Styles.kpiboxes('Risk Adversity Score:', Risk_Scoring.risk_capacity_scoring()[0], Styles.accblue),
-                Styles.kpiboxes('Portf. Expected Return:', 'pc.optimal_portfolio()[0]', Styles.accblue),
-                Styles.kpiboxes('Portf. Expected Volatiliy:', 'pc.optimal_portfolio()[1]', Styles.accblue),
+                Styles.kpiboxes('Portf. Expected Return:', f"{round(pc.optimal_portfolio()[1]*100, 4)}%", Styles.accblue),
+                Styles.kpiboxes('Portf. Expected Volatiliy:', f"{round(pc.optimal_portfolio()[0]*100, 4)}%", Styles.accblue),
             ]),
             html.Hr(),
             html.Div([
