@@ -1,13 +1,5 @@
-# We import pandas with an alias "pd". Make it easier to work with the pandas functions. Pandas is the best library
-# in Python for working with large datasets.
 import pandas as pd
-
-# Pyplot is Matplotlib's plotting library. This is used to show some graphs and to test the functions.
-from matplotlib import pyplot as plt
 import numpy as np
-
-# This is the list of assets that are going to be used. ATM just dummies.
-import Styles
 
 
 def data_preparation():
@@ -97,3 +89,4 @@ def optimal_portfolio():
     return max_sharpe_ratio[1], max_sharpe_ratio[0]
 
 
+optimal_portfolio()
