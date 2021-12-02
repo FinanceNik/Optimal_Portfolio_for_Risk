@@ -30,8 +30,6 @@ def data_preparation():
     return df_raw, df_excess
 
 
-# This function creates a portfolio with fixed weights (for now). It is just for testing purposes but it spits out a
-# graph with the efficient frontier of all of the given stocks.
 def optimal_portfolio():
     df_excess = data_preparation()[1]
     df_raw = data_preparation()[0]
@@ -73,6 +71,13 @@ def optimal_portfolio():
     # These are all the possible portfolio combinations.
     portfolios = pd.DataFrame(data)
     min_vol_port = portfolios.iloc[portfolios['Volatility'].idxmin()]
+
+    ##################################################################################
+
+    # Save the weights of the given portfolio with max sharpe to sql db.git
+
+    ##################################################################################
+
     rf = 0.00  # rf is the risk-free interest rate.
     max_sharpe_ratio = portfolios.iloc[((portfolios['Returns'] - rf) / portfolios['Volatility']).idxmax()]
 
