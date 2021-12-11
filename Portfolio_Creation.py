@@ -63,32 +63,49 @@ def optimal_portfolio():
         all_assets = ['CA', 'BO', 'BOFC', 'SE', 'GE', 'GES', 'EME', 'RE']
         selected_assets = fetch_assets()
         asset_selected = [True if x in selected_assets else False for x in all_assets]
-        # mins = [0.0 if x is False else 1.0 for x in asset_selected]
+        return asset_selected
 
-    constraint_matrix()
-    # -->     CA   BO   BOFC  SE  GE   GES  EME   RE
+    # -->   [CA, BO, BOFC, SE,  GE, GES, EME, RE]
     minimum_matrix = {
-        '1': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-        '2': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-        '3': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-        '4': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-        '5': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-        '6': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-        '7': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-        '8': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-        '9': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-        '10': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        '1': [0, 0, 0, 0, 0, 0, 0, 50],
+        '2': [0, 0, 0, 0, 0, 0, 0, 50],
+        '3': [0, 0, 0, 0, 0, 0, 0, 50],
+        '4': [0, 0, 0, 0, 0, 0, 0, 50],
+        '5': [0, 0, 0, 0, 0, 0, 0, 50],
+        '6': [0, 0, 0, 0, 0, 0, 0, 50],
+        '7': [0, 0, 0, 0, 0, 0, 0, 50],
+        '8': [0, 0, 0, 0, 0, 0, 0, 50],
+        '9': [0, 0, 0, 0, 0, 0, 0, 50],
+        '10': [0, 0, 0, 0, 0, 0, 0, 50],
     }
-    risk_cap = 6  # <-- This will be references to the actual risk score the user receives!
+    risk_cap = 2  # <-- This will be references to the actual risk score the user receives!
+
+    min_weights = list(minimum_matrix[str(risk_cap)])
+
+    # Now, overwrite the min_weights if the asset is not selected at all!
+    final_minimums = []
+    final_maximums = []
+    for item in range(len(constraint_matrix())):
+        if constraint_matrix()[item] is True:
+            final_minimums.append(min_weights[item])
+            final_maximums.append(100.0)
+        else:
+            final_minimums.append(0.0)
+            final_maximums.append(1.0)
 
     for portfolio in range(num_portfolios):
-        a = minimum_matrix[str(risk_cap)]
-        weights = np.array([1, 2, 3])
-        # print(weights)
-        weights = np.random.random(num_assets)
-        # print(weights)
-
-        # Create a Matrix with 9 columns and select the weights for each column individually.
+        weights = np.array(
+            [
+                np.random.randint(final_minimums[0], final_maximums[0])/100,
+                np.random.randint(final_minimums[1], final_maximums[1])/100,
+                np.random.randint(final_minimums[2], final_maximums[2])/100,
+                np.random.randint(final_minimums[3], final_maximums[3])/100,
+                np.random.randint(final_minimums[4], final_maximums[4])/100,
+                np.random.randint(final_minimums[5], final_maximums[5])/100,
+                np.random.randint(final_minimums[6], final_maximums[6])/100,
+                np.random.randint(final_minimums[7], final_maximums[7])/100
+            ]
+        )
 
         weights = weights / np.sum(weights)
 
@@ -107,10 +124,7 @@ def optimal_portfolio():
     for counter, symbol in enumerate(df_raw.columns[1:].tolist()):
         data[symbol + ' weight'] = [w[counter] for w in p_weights]
 
-    # These are all the possible portfolio combinations.
     portfolios = pd.DataFrame(data)
-
-    min_vol_port = portfolios.iloc[portfolios['Volatility'].idxmin()]
 
     ##################################################################################
 
@@ -120,17 +134,7 @@ def optimal_portfolio():
 
     rf = - 0.008  # rf is the risk-free interest rate.
     max_sharpe_ratio = portfolios.iloc[((portfolios['Returns'] - rf) / portfolios['Volatility']).idxmax()]
-
-    # #The visualization of the efficient frontier.
-    # plt.subplots(figsize=[10, 5])
-    # plt.scatter(portfolios['Volatility'], portfolios['Returns'], color=Styles.accblue, marker='o', s=10, alpha=0.3)
-    # # plt.scatter(min_vol_port[1], min_vol_port[0], color='r', marker='*', s=500)
-    # plt.scatter(max_sharpe_ratio[1], max_sharpe_ratio[0], color='r', marker='*', s=500)
-    # plt.title("Efficient Portfolio Frontier of Selected Assets")
-    # plt.xlabel("Volatility")
-    # plt.ylabel("Return")
-    # plt.savefig("assets/portfolio.png", dpi=130)
-    # plt.show()
+    print(round(max_sharpe_ratio[1], 4), round(max_sharpe_ratio[0], 4))
     return max_sharpe_ratio[1], max_sharpe_ratio[0]
 
 
