@@ -158,13 +158,11 @@ def selected_assets_minimums():
 def show_table_x():
     conn = sqlite3.connect('Test.db')
     cur = conn.cursor()
-    cur.execute("SELECT * FROM asset_minimums")
+    cur.execute("SELECT * FROM asset_constraints")
     colnames = cur.description
     for row in colnames:
         print(row[0])
     rows = cur.fetchmany(size=20)
     for row in rows:
-        print(row)
+        print(row[1])
 
-
-# show_table_x()

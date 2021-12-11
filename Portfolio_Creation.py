@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import sqlite3
 
 
 def data_preparation():
@@ -20,11 +21,22 @@ def data_preparation():
 
         df[f"{i}_Excess"] = df[f"{i}_LogReturn"].apply(excess_calculator)
 
-    df_excess = df[["Date", "Cash CHF_Excess", "Bonds CHF_Excess", "Bonds FC (hedged)_Excess", "Swiss Equity_Excess",
-                    "Global Equity_Excess", "Global Equity Small Caps_Excess", "EM Equity_Excess", "Real Estate_Excess"]]
+    def fetch_assets():
+        conn = sqlite3.connect('Test.db')
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM asset_constraints")
+        rows = cur.fetchmany(size=20)
+        raw = [x[1] for x in rows]
+        raw.insert(0, 'Date')
+        excess = [x[1]+'_Excess' for x in rows]
+        excess.insert(0, 'Date')
+        return raw, excess
 
-    df_raw = df[["Date", "Cash CHF", "Bonds CHF", "Bonds FC (hedged)", "Swiss Equity",
-                 "Global Equity", "Global Equity Small Caps", "EM Equity", "Real Estate"]]
+    assets_excess_list = fetch_assets()[1]
+    assets_list = fetch_assets()[0]
+
+    df_excess = df[assets_excess_list]
+    df_raw = df[assets_list]
 
     return df_raw, df_excess
 
@@ -63,9 +75,15 @@ def optimal_portfolio():
         
         '''
 
+        # Understand what the weights function is actually returning and how I am going to insert weight constraints here:
+
+        # --> Maybe something like: np.random(0.06, 0.10)
+
         weights = np.random.random(num_assets)
         weights = weights / np.sum(weights)
         p_weights.append(weights)
+
+
         returns = np.dot(weights, ind_er)
         p_returns.append(returns)
         var = cov_matrix.mul(weights, axis=0).mul(weights, axis=1).sum().sum()  # Portfolio Variance
@@ -94,7 +112,7 @@ def optimal_portfolio():
     rf = - 0.008  # rf is the risk-free interest rate.
     max_sharpe_ratio = portfolios.iloc[((portfolios['Returns'] - rf) / portfolios['Volatility']).idxmax()]
 
-    # The visualization of the efficient frontier.
+    # #The visualization of the efficient frontier.
     # plt.subplots(figsize=[10, 5])
     # plt.scatter(portfolios['Volatility'], portfolios['Returns'], color=Styles.accblue, marker='o', s=10, alpha=0.3)
     # # plt.scatter(min_vol_port[1], min_vol_port[0], color='r', marker='*', s=500)
