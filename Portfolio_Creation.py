@@ -5,7 +5,6 @@ import numpy as np
 def data_preparation():
     df = pd.read_csv("data.csv")
     df = df.iloc[::-1]
-    print(df)
     column_list = df.columns[1:]
     for i in column_list:
         df.insert(1, f"{i}_Change", "")
@@ -53,6 +52,17 @@ def optimal_portfolio():
     num_portfolios = 10000
 
     for portfolio in range(num_portfolios):
+
+        '''
+        --> Random Portfolio Weights have to be restricted at this point. 
+        
+        --> weights = np.random(if x_assetY > 0.15, elif x_assetZ > 0.20...) 
+        
+        --> If asset x should have a minimum weight of 10%, the random formula should not spit out any portfolios with 
+            a weight of < 10%. 
+        
+        '''
+
         weights = np.random.random(num_assets)
         weights = weights / np.sum(weights)
         p_weights.append(weights)
@@ -70,6 +80,9 @@ def optimal_portfolio():
 
     # These are all the possible portfolio combinations.
     portfolios = pd.DataFrame(data)
+
+    portfolios.to_csv('xx.csv')
+
     min_vol_port = portfolios.iloc[portfolios['Volatility'].idxmin()]
 
     ##################################################################################
@@ -78,7 +91,7 @@ def optimal_portfolio():
 
     ##################################################################################
 
-    rf = 0.00  # rf is the risk-free interest rate.
+    rf = - 0.008  # rf is the risk-free interest rate.
     max_sharpe_ratio = portfolios.iloc[((portfolios['Returns'] - rf) / portfolios['Volatility']).idxmax()]
 
     # The visualization of the efficient frontier.
