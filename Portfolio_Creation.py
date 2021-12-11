@@ -62,14 +62,27 @@ def optimal_portfolio():
             return assets
         all_assets = ['CA', 'BO', 'BOFC', 'SE', 'GE', 'GES', 'EME', 'RE']
         selected_assets = fetch_assets()
-        print(all_assets)
-        print('')
-        print(selected_assets)
+        asset_selected = [True if x in selected_assets else False for x in all_assets]
+        # mins = [0.0 if x is False else 1.0 for x in asset_selected]
 
     constraint_matrix()
+    # -->     CA   BO   BOFC  SE  GE   GES  EME   RE
+    minimum_matrix = {
+        '1': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        '2': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        '3': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        '4': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        '5': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        '6': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        '7': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        '8': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        '9': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        '10': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    }
+    risk_cap = 6  # <-- This will be references to the actual risk score the user receives!
 
     for portfolio in range(num_portfolios):
-
+        a = minimum_matrix[str(risk_cap)]
         weights = np.array([1, 2, 3])
         # print(weights)
         weights = np.random.random(num_assets)
