@@ -21,22 +21,12 @@ def data_preparation():
 
         df[f"{i}_Excess"] = df[f"{i}_LogReturn"].apply(excess_calculator)
 
-    def fetch_assets():
-        conn = sqlite3.connect('Test.db')
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM asset_constraints")
-        rows = cur.fetchmany(size=20)
-        raw = [x[1] for x in rows]
-        raw.insert(0, 'Date')
-        excess = [x[1]+'_Excess' for x in rows]
-        excess.insert(0, 'Date')
-        return raw, excess
+    df_excess = df[["Date", "CA_Excess", "BO_Excess", "BOFC_Excess", "SE_Excess",
+                    "GE_Excess", "GES_Excess", "EME_Excess",
+                    "RE_Excess"]]
 
-    assets_excess_list = fetch_assets()[1]
-    assets_list = fetch_assets()[0]
-
-    df_excess = df[assets_excess_list]
-    df_raw = df[assets_list]
+    df_raw = df[["Date", "CA", "BO", "BOFC", "SE",
+                 "GE", "GES", "EME", "RE"]]
 
     return df_raw, df_excess
 
@@ -49,11 +39,9 @@ def optimal_portfolio():
         return df_excess.cov()
 
     cov_matrix = covariance_matrix()
-
     ind_er = []
     for i in df_raw.columns[1:]:
         ind_er.append((df_raw[i].pct_change().mean())*12)
-
     ind_er = pd.Series([x for x in ind_er], index=df_raw.columns[1:])
 
     p_returns = []
@@ -61,29 +49,39 @@ def optimal_portfolio():
     p_weights = []
 
     num_assets = len(df_raw.columns[1:])
-    num_portfolios = 10000
+    num_portfolios = 5
+
+    def constraint_matrix():
+
+        def fetch_assets():
+            conn = sqlite3.connect('Test.db')
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM asset_constraints")
+            rows = cur.fetchmany(size=20)
+            assets = [x[1] for x in rows]
+            return assets
+        all_assets = ['CA', 'BO', 'BOFC', 'SE', 'GE', 'GES', 'EME', 'RE']
+        selected_assets = fetch_assets()
+        print(all_assets)
+        print('')
+        print(selected_assets)
+
+    constraint_matrix()
 
     for portfolio in range(num_portfolios):
 
-        '''
-        --> Random Portfolio Weights have to be restricted at this point. 
-        
-        --> weights = np.random(if x_assetY > 0.15, elif x_assetZ > 0.20...) 
-        
-        --> If asset x should have a minimum weight of 10%, the random formula should not spit out any portfolios with 
-            a weight of < 10%. 
-        
-        '''
-
-        # Understand what the weights function is actually returning and how I am going to insert weight constraints here:
-
-        # --> Maybe something like: np.random(0.06, 0.10)
-
+        weights = np.array([1, 2, 3])
+        # print(weights)
         weights = np.random.random(num_assets)
+        # print(weights)
+
+        # Create a Matrix with 9 columns and select the weights for each column individually.
+
         weights = weights / np.sum(weights)
+
         p_weights.append(weights)
 
-
+        # Because Returns are already calculated here, the weight constraints have to be implemented above.
         returns = np.dot(weights, ind_er)
         p_returns.append(returns)
         var = cov_matrix.mul(weights, axis=0).mul(weights, axis=1).sum().sum()  # Portfolio Variance
@@ -98,8 +96,6 @@ def optimal_portfolio():
 
     # These are all the possible portfolio combinations.
     portfolios = pd.DataFrame(data)
-
-    portfolios.to_csv('xx.csv')
 
     min_vol_port = portfolios.iloc[portfolios['Volatility'].idxmin()]
 
