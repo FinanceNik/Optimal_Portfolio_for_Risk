@@ -49,7 +49,7 @@ def optimal_portfolio():
     p_weights = []
 
     num_assets = len(df_raw.columns[1:])
-    num_portfolios = 5
+    num_portfolios = 5  # <-- How often is the algorithm supposed to create randomized portfolios to get the most eff.
 
     def constraint_matrix():
 
@@ -65,18 +65,20 @@ def optimal_portfolio():
         asset_selected = [True if x in selected_assets else False for x in all_assets]
         return asset_selected
 
-    # -->   [CA, BO, BOFC, SE,  GE, GES, EME, RE]
+    defr = 0.5  # <--  Degrees of Freedom for the Tool.
+
+    # -->   [CA,      BO,   BOFC,   SE,   GE,  GES,  EME,   RE]
     minimum_matrix = {
-        '1': [0, 0, 0, 0, 0, 0, 0, 50],
-        '2': [0, 0, 0, 0, 0, 0, 0, 50],
-        '3': [0, 0, 0, 0, 0, 0, 0, 50],
-        '4': [0, 0, 0, 0, 0, 0, 0, 50],
-        '5': [0, 0, 0, 0, 0, 0, 0, 50],
-        '6': [0, 0, 0, 0, 0, 0, 0, 50],
-        '7': [0, 0, 0, 0, 0, 0, 0, 50],
-        '8': [0, 0, 0, 0, 0, 0, 0, 50],
-        '9': [0, 0, 0, 0, 0, 0, 0, 50],
-        '10': [0, 0, 0, 0, 0, 0, 0, 50],
+        '1': [47.50*defr, 0.00*defr, 47.50*defr, 1.00*defr, 0.00*defr, 0.00*defr, 0.00*defr, 4.00*defr],
+        '2': [33.78*defr, 16.89*defr, 33.78*defr, 2.07*defr, 1.04*defr, 0.00*defr, 0.00*defr, 10.89*defr],
+        '3': [22.17*defr, 25.86*defr, 25.86*defr, 3.48*defr, 3.48*defr, 3.48*defr, 0.00*defr, 15.67*defr],
+        '4': [12.67*defr, 25.33*defr, 25.33*defr, 4.58*defr, 4.58*defr, 4.58*defr, 4.58*defr, 18.33*defr],
+        '5': [5.28*defr, 23.75*defr, 23.75*defr, 5.90*defr, 5.90*defr, 5.90*defr, 5.90*defr, 23.61*defr],
+        '6': [0.00*defr, 21.11*defr, 21.11*defr, 7.22*defr, 7.22*defr, 7.22*defr, 7.22*defr, 28.89*defr],
+        '7': [0.00*defr, 15.83*defr, 15.83*defr, 0.00*defr, 13.67*defr, 13.67*defr, 13.67*defr, 27.33*defr],
+        '8': [0.00*defr, 21.11*defr, 0.00*defr, 0.00*defr, 0.00*defr, 36.81*defr, 18.41*defr, 23.67*defr],
+        '9': [0.00*defr, 10.56*defr, 0.00*defr, 0.00*defr, 0.00*defr, 0.00*defr, 71.57*defr, 17.89*defr],
+        '10': [0.00*defr, 0.00*defr, 0.00*defr, 0.00*defr, 0.00*defr, 0.00*defr, 100.0*defr, 0.00*defr],
     }
     risk_cap = 2  # <-- This will be references to the actual risk score the user receives!
 
@@ -134,6 +136,7 @@ def optimal_portfolio():
 
     rf = - 0.008  # rf is the risk-free interest rate.
     max_sharpe_ratio = portfolios.iloc[((portfolios['Returns'] - rf) / portfolios['Volatility']).idxmax()]
+    print(max_sharpe_ratio)
     print(round(max_sharpe_ratio[1], 4), round(max_sharpe_ratio[0], 4))
     return max_sharpe_ratio[1], max_sharpe_ratio[0]
 
