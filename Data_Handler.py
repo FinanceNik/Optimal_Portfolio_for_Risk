@@ -155,6 +155,27 @@ def selected_assets_minimums():
     return data_table, selected_list
 
 
+def selected_portfolio_weights():
+    selected_list = []
+    c = sqlite3.connect('Test.db')
+    cur = c.cursor()
+    for i in range(8):
+        try:
+            cur.execute(f"SELECT Value FROM portfolioWeights WHERE VariableName='{i}'")
+            one = cur.fetchone()
+            selected_list.append(one[0])
+        except:
+            selected_list.append("")
+    full_asset_name_list = [
+        "Cash", "Bonds", "Bonds FC (hedged)", "Swiss Equity",
+        "Global Equity", "Global Equity Small Cap", "Emerging Markets Equity", "Real Estate"
+    ]
+    data = {"Asset Class": full_asset_name_list,
+            "Selected": selected_list}
+    data_table = pd.DataFrame(data)
+    return data_table, selected_list
+
+
 def populate_weights(index, values):
     connection = sqlite3.connect('Test.db')
     c = connection.cursor()

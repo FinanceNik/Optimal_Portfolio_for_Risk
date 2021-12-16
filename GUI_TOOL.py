@@ -237,24 +237,18 @@ def render_page_content(pathname):
             html.Div([
                 dash_table.DataTable(
                     id='stat_table',
-                    columns=[{'name': i, 'id': i} for i in dh.selected_assets_minimums()[0].columns],
+                    columns=[{'name': i, 'id': i} for i in dh.selected_portfolio_weights()[0].columns],
                     style_cell_conditional=[],
                     style_as_list_view=False,
                     style_cell={'padding': '5px', 'border-radius': '50px'},
                     style_header={'backgroundColor': Styles.blues1, 'fontWeight': 'bold', 'color': 'white',
                                   'border': '1px solid grey', 'height': '50px', 'font-size': '16px'},
-                    style_data_conditional=[{'if': {'row_index': 'odd'}, 'backgroundColor': '#DDEBF7'},
-                                            {'if': {'row_index': 'even'}, 'backgroundColor': '#F2F2F2'},
-                                            {'if': {'filter_query': '{Selected} > 0',
-                                                    'column_id': 'Selected'},
-                                             'backgroundColor': Styles.lightRed, 'color': 'black'},
-                                            ],
                     style_table={'border': '1px solid lightgrey',
                                  'borderRadius': '10px',
                                  'overflow': 'hidden',
                                  'box-shadow': '5px 4px 5px 5px lightgrey'},
                     style_data={'border': '1px solid grey', 'font-size': '12px'},
-                    data=dh.selected_assets_minimums()[0].to_dict('records'),
+                    data=dh.selected_portfolio_weights()[0].to_dict('records'),
 
                 )
             ], style={"width": "30%", 'align': 'center', 'margin-left': '34.5%'}),
