@@ -155,14 +155,63 @@ def selected_assets_minimums():
     return data_table, selected_list
 
 
+def populate_weights(index, values):
+    connection = sqlite3.connect('Test.db')
+    c = connection.cursor()
+    try:
+        c.execute("""CREATE TABLE portfolioWeights (
+                    VariableName text,
+                    Value real
+                    )""")
+    except:
+        pass
+
+    for i in range(len(index)):
+        try:
+            c.execute(f"DELETE FROM portfolioWeights WHERE VariableName='{i}'")
+            connection.commit()
+        except:
+            pass
+        try:
+            c.execute("INSERT INTO portfolioWeights VALUES (:VariableName,:Value)",
+                      {'VariableName': f'{i}', 'Value': values[i]})
+            connection.commit()
+        except:
+            pass
+
+
+def populate_volatility_AND_return(index, values):
+    connection = sqlite3.connect('Test.db')
+    c = connection.cursor()
+    try:
+        c.execute("""CREATE TABLE portfolio_volatility_AND_return (
+                    VariableName text,
+                    Value real
+                    )""")
+    except:
+        pass
+
+    for i in range(len(index)):
+        try:
+            c.execute(f"DELETE FROM portfolio_volatility_AND_return WHERE VariableName='{i}'")
+            connection.commit()
+        except:
+            pass
+        try:
+            c.execute("INSERT INTO portfolio_volatility_AND_return VALUES (:VariableName,:Value)",
+                      {'VariableName': f'{i}', 'Value': values[i]})
+            connection.commit()
+        except:
+            pass
+
+
 def show_table_x():
     conn = sqlite3.connect('Test.db')
     cur = conn.cursor()
-    cur.execute("SELECT * FROM asset_constraints")
+    cur.execute("SELECT * FROM portfolioWeights")
     colnames = cur.description
     for row in colnames:
         print(row[0])
     rows = cur.fetchmany(size=20)
     for row in rows:
         print(row[1])
-
