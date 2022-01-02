@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import sqlite3
 import Data_Handler as dh
-
 import Risk_Scoring
 
 
