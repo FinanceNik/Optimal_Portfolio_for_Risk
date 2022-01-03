@@ -60,7 +60,7 @@ def dataframe_population_firstRow():
     return df
 
 
-def dataframe_population_firstYear():
+def dataframe_population():
     df = dataframe_population_firstRow()
     markowitz_weights_line = 177
     # loop the whole dataset
@@ -101,8 +101,44 @@ def dataframe_population_firstYear():
         except:
             pass
 
-    # now, we are saving the backtesting portfolio values into a database in order to generate a graph later.
+    return df
 
+# now, we are saving the backtesting portfolio values into a database in order to generate a graph later.
+
+
+def backtesting_SQL_population():
+    df = dataframe_population()
+    portValue_list = df['portfolio_value'].to_list()
+
+    connection = sqlite3.connect('Test.db')
+    c = connection.cursor()
+    try:
+        c.execute("""CREATE TABLE backtesting_portfolio_values (
+                    VariableName text,
+                    Value real
+                    )""")
+    except:
+        pass
+
+    for i in range(len(portValue_list)):
+        try:
+            c.execute(f"DELETE FROM backtesting_portfolio_values WHERE VariableName='{i}'")
+            connection.commit()
+        except:
+            pass
+        try:
+            c.execute("INSERT INTO backtesting_portfolio_values VALUES (:VariableName,:Value)",
+                      {'VariableName': f'{i}', 'Value': portValue_list[i]})
+            connection.commit()
+        except:
+            pass
+
+    connection.commit()
+    connection.close()
+
+
+
+backtesting_SQL_population()
 
 
 
