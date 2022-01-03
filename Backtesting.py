@@ -64,41 +64,45 @@ def dataframe_population_firstYear():
     df = dataframe_population_firstRow()
     markowitz_weights_line = 177
     # loop the whole dataset
-    for line in range(177, 0, -6):
-        print(line, line-6)
+    for line in range(177, 2, -6):
+        try:
+            for i in range(line-1, line-6, -1):
+                for asset in asset_list:
+                    df[f'{asset}_value'][i] = float(df[f'{asset}_share'][line]) * float(df[f'{asset}'][i])
 
-    for i in range(176, 171, -1):
-        for asset in asset_list:
-            df[f'{asset}_value'][i] = float(df[f'{asset}_share'][177]) * float(df[f'{asset}'][i])
+                df['portfolio_value'][i] = float(df['CA_value'][i]) + float(df['BO_value'][i]) + float(df['BOFC_value'][i]) + \
+                                           float(df['SE_value'][i]) + float(df['GE_value'][i]) + float(df['GES_value'][i]) + \
+                                           float(df['EME_value'][i]) + float(df['RE_value'][i])
+                df['portfolio_value'][i] = round(df['portfolio_value'][i], 2)
 
-        df['portfolio_value'][i] = float(df['CA_value'][i]) + float(df['BO_value'][i]) + float(df['BOFC_value'][i]) + \
-                                   float(df['SE_value'][i]) + float(df['GE_value'][i]) + float(df['GES_value'][i]) + \
-                                   float(df['EME_value'][i]) + float(df['RE_value'][i])
-        df['portfolio_value'][i] = round(df['portfolio_value'][i], 2)
+            # re-balancing part --> always in January and July
+            # calculate the portfolio value with asset values based on next period for re-balancing
+            portf_rebalancing_value = float(df['CA_share'][line]) * float(df['CA'][line-6]) + \
+                                      float(df['BO_share'][line]) * float(df['BO'][line-6]) + \
+                                      float(df['BOFC_share'][line]) * float(df['BOFC'][line-6]) + \
+                                      float(df['SE_share'][line]) * float(df['SE'][line-6]) + \
+                                      float(df['GE_share'][line]) * float(df['GE'][line-6]) + \
+                                      float(df['GES_share'][line]) * float(df['GES'][line-6]) + \
+                                      float(df['EME_share'][line]) * float(df['EME'][line-6]) + \
+                                      float(df['RE_share'][line]) * float(df['RE'][line-6])
+            for asset in asset_list:
+                df[f'{asset}_value'][line-6] = float(df[f'{asset}_weight'][markowitz_weights_line]) * portf_rebalancing_value
 
-    # re-balancing part --> always in January and July
-    # calculate the portfolio value with asset values based on next period for re-balancing
-    portf_rebalancing_value = float(df['CA_share'][177]) * float(df['CA'][171]) + \
-                              float(df['BO_share'][177]) * float(df['BO'][171]) + \
-                              float(df['BOFC_share'][177]) * float(df['BOFC'][171]) + \
-                              float(df['SE_share'][177]) * float(df['SE'][171]) + \
-                              float(df['GE_share'][177]) * float(df['GE'][171]) + \
-                              float(df['GES_share'][177]) * float(df['GES'][171]) + \
-                              float(df['EME_share'][177]) * float(df['EME'][171]) + \
-                              float(df['RE_share'][177]) * float(df['RE'][171])
-    for asset in asset_list:
-        df[f'{asset}_value'][171] = float(df[f'{asset}_weight'][markowitz_weights_line]) * portf_rebalancing_value
+            for asset in asset_list:
+                df[f'{asset}_share'][line-6] = float(df[f'{asset}_value'][171]) / float(df[f'{asset}'][171])
 
-    for asset in asset_list:
-        df[f'{asset}_share'][171] = float(df[f'{asset}_value'][171]) / float(df[f'{asset}'][171])
+            df['portfolio_value'][line-6] = float(df['CA_value'][line-6]) + float(df['BO_value'][line-6]) + float(df['BOFC_value'][line-6]) + \
+                                       float(df['SE_value'][line-6]) + float(df['GE_value'][line-6]) + float(df['GES_value'][line-6]) + \
+                                       float(df['EME_value'][line-6]) + float(df['RE_value'][line-6])
+            df['portfolio_value'][line-6] = round(df['portfolio_value'][line-6], 2)
 
-    df['portfolio_value'][171] = float(df['CA_value'][171]) + float(df['BO_value'][171]) + float(df['BOFC_value'][171]) + \
-                               float(df['SE_value'][171]) + float(df['GE_value'][171]) + float(df['GES_value'][171]) + \
-                               float(df['EME_value'][171]) + float(df['RE_value'][171])
-    df['portfolio_value'][171] = round(df['portfolio_value'][171], 2)
+        # due to the construction of the loop, there will be an error raised on the line nr. 3. This can be excepted
+        # as it is not causing any problems.
+        except:
+            pass
 
-    df.to_csv('XXX.csv')
+    # now, we are saving the backtesting portfolio values into a database in order to generate a graph later.
 
 
-dataframe_population_firstYear()
+
 
