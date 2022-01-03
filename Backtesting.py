@@ -37,13 +37,25 @@ def dataframe_population_weights():
     data_weights = {"CA": data[0], "BO": data[1], "BOFC": data[2], "SE": data[3],
                     "GE": data[4], "GES": data[5], "EME": data[6], "RE": data[7]}
     for i in range(len(df.index)):
-        if df['Month'][i] == '1' or df['Month'][i] == '6':
+        if df['Month'][i] == '1' or df['Month'][i] == '7':
             for asset in asset_list:
                 df[f'{asset}_weight'][i] = data_weights[f"{asset}"]
         else:
-            print('')
+            pass
+    return df
+
+
+def dataframe_population_values():
+    df = dataframe_population_weights()
+    df['portfolio_value'][177] = 100_000
+    df['period_return'][177] = 0.0
+    for asset in asset_list:
+        df[f'{asset}_value'][177] = df[f'{asset}_weight'][177] * df['portfolio_value'][177]
+
+    for asset in asset_list:
+        df[f'{asset}_share'][177] = float(df[f'{asset}_value'][177]) / float(df[f'{asset}'][177])
 
     df.to_csv('XXX.csv')
 
 
-dataframe_population_weights()
+dataframe_population_values()
