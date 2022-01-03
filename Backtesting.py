@@ -3,6 +3,9 @@ import numpy as np
 import sqlite3
 import Portfolio_Creation as pc
 import Data_Handler as dh
+import warnings
+from pandas.core.common import SettingWithCopyWarning
+warnings.simplefilter(action="ignore", category=SettingWithCopyWarning)
 
 asset_list = ["CA", "BO", "BOFC", "SE", "GE", "GES", "EME", "RE"]
 
@@ -59,22 +62,32 @@ def dataframe_population_firstRow():
 
 def dataframe_population_firstYear():
     df = dataframe_population_firstRow()
+    markowitz_weights_line = 177
+    # loop the whole dataset
+    for line in range(177, 0, -6):
+        print(line, line-6)
+
     for i in range(176, 171, -1):
         for asset in asset_list:
-            try:
-                df[f'{asset}_value'][i] = float(df[f'{asset}_share'][177]) * float(df[f'{asset}'][i])
-            except:
-                df[f'{asset}_value'][i] = 0.0
+            df[f'{asset}_value'][i] = float(df[f'{asset}_share'][177]) * float(df[f'{asset}'][i])
+
         df['portfolio_value'][i] = float(df['CA_value'][i]) + float(df['BO_value'][i]) + float(df['BOFC_value'][i]) + \
                                    float(df['SE_value'][i]) + float(df['GE_value'][i]) + float(df['GES_value'][i]) + \
                                    float(df['EME_value'][i]) + float(df['RE_value'][i])
         df['portfolio_value'][i] = round(df['portfolio_value'][i], 2)
 
+    # re-balancing part --> always in January and July
+    # calculate the portfolio value with asset values based on next period for re-balancing
+    portf_rebalancing_value = float(df['CA_share'][177]) * float(df['CA'][171]) + \
+                              float(df['BO_share'][177]) * float(df['BO'][171]) + \
+                              float(df['BOFC_share'][177]) * float(df['BOFC'][171]) + \
+                              float(df['SE_share'][177]) * float(df['SE'][171]) + \
+                              float(df['GE_share'][177]) * float(df['GE'][171]) + \
+                              float(df['GES_share'][177]) * float(df['GES'][171]) + \
+                              float(df['EME_share'][177]) * float(df['EME'][171]) + \
+                              float(df['RE_share'][177]) * float(df['RE'][171])
     for asset in asset_list:
-        try:
-            df[f'{asset}_value'][171] = float(df[f'{asset}_weight'][171]) * float(df['portfolio_value'][171+1])
-        except:
-            df[f'{asset}_value'][171] = 0.0
+        df[f'{asset}_value'][171] = float(df[f'{asset}_weight'][markowitz_weights_line]) * portf_rebalancing_value
 
     for asset in asset_list:
         df[f'{asset}_share'][171] = float(df[f'{asset}_value'][171]) / float(df[f'{asset}'][171])
