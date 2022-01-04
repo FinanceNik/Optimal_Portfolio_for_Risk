@@ -226,6 +226,25 @@ def populate_volatility_AND_return(index, values):
             pass
 
 
+def portfolio_backtesting_values_lists():
+
+    df = pd.read_csv('data.csv')
+    df = df.iloc[::-1]
+    dateList = df['Date'].to_list()
+    backtesting_values = []
+    c = sqlite3.connect('Test.db')
+    cur = c.cursor()
+
+    for i in range(len(df.index)):
+        try:
+            cur.execute(f"SELECT Value FROM backtesting_portfolio_values WHERE VariableName='{i}'")
+            one = cur.fetchone()
+            backtesting_values.append(one[0])
+        except:
+            pass
+    return dateList, backtesting_values
+
+
 def show_table_x():
     conn = sqlite3.connect('Test.db')
     cur = conn.cursor()

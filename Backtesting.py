@@ -1,5 +1,3 @@
-import pandas as pd
-import numpy as np
 import sqlite3
 import Portfolio_Creation as pc
 import Data_Handler as dh
@@ -136,9 +134,6 @@ def backtesting_SQL_population():
     connection.commit()
     connection.close()
 
-
-
-backtesting_SQL_population()
 
 
 

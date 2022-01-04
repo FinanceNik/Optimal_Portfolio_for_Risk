@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import sqlite3
+import Backtesting
 import Data_Handler as dh
 import Risk_Scoring
 
@@ -166,6 +167,7 @@ def optimal_portfolio():
 
     dh.populate_weights(weight_index, weight_values)
     dh.populate_volatility_AND_return(portfolio_volatility_AND_return_index, portfolio_volatility_AND_return_values)
+    Backtesting.backtesting_SQL_population()
 
     return max_sharpe_ratio[1], max_sharpe_ratio[0]
 

@@ -98,7 +98,7 @@ def risk_willingness_scoring():
         elif rw_score > 22:
             return 'very high', 5
     except:
-        return "none"
+        return "none", 0
 
 
 ##########################################################################
@@ -174,7 +174,7 @@ def risk_capacity_scoring():
             return 'medium', 3
         elif rc_score <= 17:
             return 'high', 4
-        elif rc_score > 20:
+        elif rc_score > 17:
             return 'very high', 5
     except:
-        return "none"
+        return "none", 0

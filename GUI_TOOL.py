@@ -1,5 +1,3 @@
-import base64
-import os
 import warnings
 import dash
 import dash_bootstrap_components as dbc
@@ -57,7 +55,7 @@ app.layout = html.Div([
 def output_maximum(n_clicks, value1, value2, value3, value4, value5, value6, value7, value8):
     value_list = [value1, value2, value3, value4, value5, value6, value7, value8]
     if n_clicks > 0:
-        print("Dicks")
+        print("clicked")
 
 
 @app.callback(
@@ -233,6 +231,21 @@ def render_page_content(pathname):
                 Styles.kpiboxes('Portf. Expected Return:', f"{round(pc.optimal_portfolio()[1]*100, 4)}%", Styles.accblue),
                 Styles.kpiboxes('Portf. Expected Volatiliy:', f"{round(pc.optimal_portfolio()[0]*100, 4)}%", Styles.accblue),
             ]),
+            html.Hr(),
+            html.Div([
+                dcc.Graph(
+                    id='Portfolio Backtesting Graph',
+                    figure={'data': [{'x': dh.portfolio_backtesting_values_lists()[0],
+                                      'y': dh.portfolio_backtesting_values_lists()[1],
+                                      'type': 'line', 'title': "Portfolio Backtesting (01.01.2007 = 100.000)",
+                                      'marker': {'color': Styles.accblue},
+                                      'mode': 'line',
+                                      'line': {'width': 8}}],
+                            'layout': {'title': 'Portfolio Backtesting (01.01.2007 = 100.000)',
+                                       'xaxis': {'title': 'Time as Date Stamps'},
+                                       'yaxis': {'title': 'Portfolio Value'}}}
+                ),
+            ], style=Styles.STYLE(100)),
             html.Hr(),
             html.Div([
                 dash_table.DataTable(
@@ -778,4 +791,4 @@ def render_content(tab):
 
 
 if __name__ == "__main__":
-    app.run_server(port=8888, debug=False)
+    app.run_server(port=8888, debug=True)
