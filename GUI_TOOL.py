@@ -42,38 +42,38 @@ app.layout = html.Div([
 ])
 
 
-@app.callback(
-    Output("output-maximum", "value"),
-    Input("submit-maximum", "n_clicks"),
-    Input("Input-max-1", "value"),
-    Input("Input-max-2", "value"),
-    Input("Input-max-3", "value"),
-    Input("Input-max-4", "value"),
-    Input("Input-max-5", "value"),
-    Input("Input-max-6", "value"),
-    Input("Input-max-7", "value"),
-    Input("Input-max-8", "value"))
-def output_maximum(n_clicks, value1, value2, value3, value4, value5, value6, value7, value8):
-    value_list = [value1, value2, value3, value4, value5, value6, value7, value8]
-    if n_clicks > 0:
-        print("clicked")
-
-
-@app.callback(
-    Output("output-minimum", "value"),
-    Input("submit-minimum", "n_clicks"),
-    Input("Input-1", "value"),
-    Input("Input-2", "value"),
-    Input("Input-3", "value"),
-    Input("Input-4", "value"),
-    Input("Input-5", "value"),
-    Input("Input-6", "value"),
-    Input("Input-7", "value"),
-    Input("Input-8", "value"))
-def output_minimum(n_clicks, value1, value2, value3, value4, value5, value6, value7, value8):
-    value_list = [value1, value2, value3, value4, value5, value6, value7, value8]
-    if n_clicks > 0:
-        dh.SQL_Populator_Constraints_Minimums(value_list)
+# @app.callback(
+#     Output("output-maximum", "value"),
+#     Input("submit-maximum", "n_clicks"),
+#     Input("Input-max-1", "value"),
+#     Input("Input-max-2", "value"),
+#     Input("Input-max-3", "value"),
+#     Input("Input-max-4", "value"),
+#     Input("Input-max-5", "value"),
+#     Input("Input-max-6", "value"),
+#     Input("Input-max-7", "value"),
+#     Input("Input-max-8", "value"))
+# def output_maximum(n_clicks, value1, value2, value3, value4, value5, value6, value7, value8):
+#     value_list = [value1, value2, value3, value4, value5, value6, value7, value8]
+#     if n_clicks > 0:
+#         print("clicked")
+#
+#
+# @app.callback(
+#     Output("output-minimum", "value"),
+#     Input("submit-minimum", "n_clicks"),
+#     Input("Input-1", "value"),
+#     Input("Input-2", "value"),
+#     Input("Input-3", "value"),
+#     Input("Input-4", "value"),
+#     Input("Input-5", "value"),
+#     Input("Input-6", "value"),
+#     Input("Input-7", "value"),
+#     Input("Input-8", "value"))
+# def output_minimum(n_clicks, value1, value2, value3, value4, value5, value6, value7, value8):
+#     value_list = [value1, value2, value3, value4, value5, value6, value7, value8]
+#     if n_clicks > 0:
+#         dh.SQL_Populator_Constraints_Minimums(value_list)
 
 
 @app.callback(
@@ -229,8 +229,8 @@ def render_page_content(pathname):
             html.Div([
                 Styles.kpiboxes('Risk Capacity Score:', Risk_Scoring.risk_willingness_scoring()[0], Styles.accblue),
                 Styles.kpiboxes('Risk Adversity Score:', Risk_Scoring.risk_capacity_scoring()[0], Styles.accblue),
-                Styles.kpiboxes('Portf. Expected Return:', f"{round(pc.optimal_portfolio()[1]*100, 4)}%", Styles.accblue),
-                Styles.kpiboxes('Portf. Expected Volatiliy:', f"{round(pc.optimal_portfolio()[0]*100, 4)}%", Styles.accblue),
+                Styles.kpiboxes('Expected Return Forward:', f"{round(pc.optimal_portfolio()[1]*100, 4)}%", Styles.accblue),
+                Styles.kpiboxes('Expected Volatiliy Histor.:', f"{round(dh.historical_volatility()*100, 4)}%", Styles.accblue),
             ]),
             html.Hr(),
             html.Div([
@@ -306,35 +306,6 @@ def render_page_content(pathname):
                 Styles.kpiboxes('Max Portf. Value:', "{:,}".format(mcs('neutral')[2]), Styles.accblue),
                 Styles.kpiboxes('Min Portf. Value:', "{:,}".format(mcs('neutral')[3]), Styles.accblue),
             ]),
-            html.Hr(),
-            html.Div([
-                dcc.Graph(
-                    id='Efficient Market Portfolio Graph',
-                    figure={'data': [{'x': [0, 1, 2, 3, 4, 5, 6, 4, 2, 7, 8, 9, 4, 2, 9, 10],
-                                      'y': [0, 1, 2, 3, 4, 5, 6, 4, 2, 7, 8, 9, 4, 2, 9, 10],
-                                      'type': 'line', 'title': "Efficient Market Graph",
-                                      'marker': {'color': Styles.accblue},
-                                      'mode': 'markers'}],
-                            'layout': {'title': 'Efficient Market Portfolio Graph',
-                                       'xaxis': {'title': 'Volatility'},
-                                       'yaxis': {'title': 'Return'}}}
-                ),
-            ], style=Styles.STYLE(49)),
-            html.Div([''], style=Styles.FILLER()),
-            html.Div([
-                dcc.Graph(
-                    id='Monte Carlo Analysis',
-                    figure={'data': [{'x': [0, 1, 2, 3, 4, 5, 6, 4, 2, 7, 8, 9, 4, 2, 9, 10],
-                                      'y': [0, 1, 2, 3, 4, 5, 6, 4, 2, 7, 8, 9, 4, 2, 9, 10],
-                                      'type': 'line', 'title': "Monte Carlo Analysis",
-                                      'marker': {'color': Styles.accblue},
-                                      'mode': 'lines',
-                                      'line': {'width': 8}}],
-                            'layout': {'title': 'Monte Carlo Analysis',
-                                       'xaxis': {'title': 'Years'},
-                                       'yaxis': {'title': 'Value Development'}}}
-                ),
-            ], style=Styles.STYLE(49)),
             html.Hr(),
         ])
 
@@ -523,148 +494,148 @@ def render_content(tab):
                                   'font-size': '24px'}),
             ]),
             html.Hr(),
-            html.Div([
-                html.H5('Assign minimum and maximum values to each asset class.')
-            ], style={'textAlign': 'center'}),
-            html.Div([
-                html.I('Please only insert value if asset shall have a minimum otherwise leave blank!')
-            ], style={'textAlign': 'center'}),
-            html.Div([
-                html.I('Insert value as full number (if constraint shall be 20%, insert 20)!')
-            ], style={'textAlign': 'center'}),
-            html.Br(),
-            html.Div([
-                html.Div([], style={'width': f'{12}%', 'display': 'inline-block'}),
-                html.Div([
-                    html.Div([
-                        html.H6('Minimums:')
-                    ], style={'textAlign': 'center'}),
-                    html.Br(),
-                    html.Div([
-                        html.Div([
-                            dcc.Input(
-                                id="Input-1",
-                                type="text",
-                                placeholder="min. Cash"),
-                        ], style={"width": "100%"}),
-                        html.Div([
-                            dcc.Input(
-                                id="Input-2",
-                                type="text",
-                                placeholder="min. Bonds"),
-                        ], style={"width": "100%"}),
-                        html.Div([
-                            dcc.Input(
-                                id="Input-3",
-                                type="text",
-                                placeholder="min. Bonds FC (hedged)"),
-                        ], style={"width": "100%"}),
-                        html.Div([
-                            dcc.Input(
-                                id="Input-4",
-                                type="text",
-                                placeholder="min. Swiss Equity"),
-                        ], style={"width": "100%"}),
-                        html.Div([
-                            dcc.Input(
-                                id="Input-5",
-                                type="text",
-                                placeholder="min. Global Equity"),
-                        ], style={"width": "100%"}),
-                        html.Div([
-                            dcc.Input(
-                                id="Input-6",
-                                type="text",
-                                placeholder="min. Global Equity Small Cap"),
-                        ], style={"width": "100%"}),
-                        html.Div([
-                            dcc.Input(
-                                id="Input-7",
-                                type="text",
-                                placeholder="min. Emerging Markets Equity"),
-                        ], style={"width": "100%"}),
-                        html.Div([
-                            dcc.Input(
-                                id="Input-8",
-                                type="text",
-                                placeholder="min. Real Estate"),
-                        ], style={"width": "100%"}),
-                        html.Div(id="output-minimum")
-                    ], style={'margin-left': '27%'}),
-                    html.Div([
-                        html.Button('Submit Minimum Selection', id='submit-minimum', n_clicks=0)
-                    ], style={'width': f'{100}%', 'display': 'inline-block',
-                              'align': 'center', 'padding': '10px',
-                              'textAlign': 'center',
-                              'font-size': '24px'}),
-                ], style=Styles.STYLE(35)),
-                html.Div([], style={'width': f'{5}%', 'display': 'inline-block'}),
-                html.Div([
-                    html.Div([
-                        html.H6('Maximums:')
-                    ], style={'textAlign': 'center'}),
-                    html.Br(),
-                    html.Div([
-                        html.Div([
-                            dcc.Input(
-                                id="Input-max-1",
-                                type="text",
-                                placeholder="max. Cash"),
-                        ], style={"width": "100%"}),
-                        html.Div([
-                            dcc.Input(
-                                id="Input-max-2",
-                                type="text",
-                                placeholder="max. Bonds"),
-                        ], style={"width": "100%"}),
-                        html.Div([
-                            dcc.Input(
-                                id="Input-max-3",
-                                type="text",
-                                placeholder="max. Bonds FC (hedged)"),
-                        ], style={"width": "100%"}),
-                        html.Div([
-                            dcc.Input(
-                                id="Input-max-4",
-                                type="text",
-                                placeholder="max. Swiss Equity"),
-                        ], style={"width": "100%"}),
-                        html.Div([
-                            dcc.Input(
-                                id="Input-max-5",
-                                type="text",
-                                placeholder="max. Global Equity"),
-                        ], style={"width": "100%"}),
-                        html.Div([
-                            dcc.Input(
-                                id="Input-max-6",
-                                type="text",
-                                placeholder="max. Global Equity Small Cap"),
-                        ], style={"width": "100%"}),
-                        html.Div([
-                            dcc.Input(
-                                id="Input-max-7",
-                                type="text",
-                                placeholder="max. Emerging Markets Equity"),
-                        ], style={"width": "100%"}),
-                        html.Div([
-                            dcc.Input(
-                                id="Input-max-8",
-                                type="text",
-                                placeholder="max. Real Estate"),
-                        ], style={"width": "100%"}),
-                        html.Div(id="output-maximum")
-                    ], style={'margin-left': '27%'}),
-                    html.Div([
-                        html.Button('Submit Maximum Selection', id='submit-maximum', n_clicks=0)
-                    ], style={'width': f'{100}%', 'display': 'inline-block',
-                              'align': 'center', 'padding': '10px',
-                              'textAlign': 'center',
-                              'font-size': '24px'}),
-                ], style=Styles.STYLE(35)),
-                html.Div([], style={'width': f'{5}%', 'display': 'inline-block'}),
-                html.Hr()
-            ])
+            # html.Div([
+            #     html.H5('Assign minimum and maximum values to each asset class.')
+            # ], style={'textAlign': 'center'}),
+            # html.Div([
+            #     html.I('Please only insert value if asset shall have a minimum otherwise leave blank!')
+            # ], style={'textAlign': 'center'}),
+            # html.Div([
+            #     html.I('Insert value as full number (if constraint shall be 20%, insert 20)!')
+            # ], style={'textAlign': 'center'}),
+            # html.Br(),
+            # html.Div([
+            #     html.Div([], style={'width': f'{12}%', 'display': 'inline-block'}),
+            #     html.Div([
+            #         html.Div([
+            #             html.H6('Minimums:')
+            #         ], style={'textAlign': 'center'}),
+            #         html.Br(),
+            #         html.Div([
+            #             html.Div([
+            #                 dcc.Input(
+            #                     id="Input-1",
+            #                     type="text",
+            #                     placeholder="min. Cash"),
+            #             ], style={"width": "100%"}),
+            #             html.Div([
+            #                 dcc.Input(
+            #                     id="Input-2",
+            #                     type="text",
+            #                     placeholder="min. Bonds"),
+            #             ], style={"width": "100%"}),
+            #             html.Div([
+            #                 dcc.Input(
+            #                     id="Input-3",
+            #                     type="text",
+            #                     placeholder="min. Bonds FC (hedged)"),
+            #             ], style={"width": "100%"}),
+            #             html.Div([
+            #                 dcc.Input(
+            #                     id="Input-4",
+            #                     type="text",
+            #                     placeholder="min. Swiss Equity"),
+            #             ], style={"width": "100%"}),
+            #             html.Div([
+            #                 dcc.Input(
+            #                     id="Input-5",
+            #                     type="text",
+            #                     placeholder="min. Global Equity"),
+            #             ], style={"width": "100%"}),
+            #             html.Div([
+            #                 dcc.Input(
+            #                     id="Input-6",
+            #                     type="text",
+            #                     placeholder="min. Global Equity Small Cap"),
+            #             ], style={"width": "100%"}),
+            #             html.Div([
+            #                 dcc.Input(
+            #                     id="Input-7",
+            #                     type="text",
+            #                     placeholder="min. Emerging Markets Equity"),
+            #             ], style={"width": "100%"}),
+            #             html.Div([
+            #                 dcc.Input(
+            #                     id="Input-8",
+            #                     type="text",
+            #                     placeholder="min. Real Estate"),
+            #             ], style={"width": "100%"}),
+            #             html.Div(id="output-minimum")
+            #         ], style={'margin-left': '27%'}),
+            #         html.Div([
+            #             html.Button('Submit Minimum Selection', id='submit-minimum', n_clicks=0)
+            #         ], style={'width': f'{100}%', 'display': 'inline-block',
+            #                   'align': 'center', 'padding': '10px',
+            #                   'textAlign': 'center',
+            #                   'font-size': '24px'}),
+            #     ], style=Styles.STYLE(35)),
+            #     html.Div([], style={'width': f'{5}%', 'display': 'inline-block'}),
+            #     html.Div([
+            #         html.Div([
+            #             html.H6('Maximums:')
+            #         ], style={'textAlign': 'center'}),
+            #         html.Br(),
+            #         html.Div([
+            #             html.Div([
+            #                 dcc.Input(
+            #                     id="Input-max-1",
+            #                     type="text",
+            #                     placeholder="max. Cash"),
+            #             ], style={"width": "100%"}),
+            #             html.Div([
+            #                 dcc.Input(
+            #                     id="Input-max-2",
+            #                     type="text",
+            #                     placeholder="max. Bonds"),
+            #             ], style={"width": "100%"}),
+            #             html.Div([
+            #                 dcc.Input(
+            #                     id="Input-max-3",
+            #                     type="text",
+            #                     placeholder="max. Bonds FC (hedged)"),
+            #             ], style={"width": "100%"}),
+            #             html.Div([
+            #                 dcc.Input(
+            #                     id="Input-max-4",
+            #                     type="text",
+            #                     placeholder="max. Swiss Equity"),
+            #             ], style={"width": "100%"}),
+            #             html.Div([
+            #                 dcc.Input(
+            #                     id="Input-max-5",
+            #                     type="text",
+            #                     placeholder="max. Global Equity"),
+            #             ], style={"width": "100%"}),
+            #             html.Div([
+            #                 dcc.Input(
+            #                     id="Input-max-6",
+            #                     type="text",
+            #                     placeholder="max. Global Equity Small Cap"),
+            #             ], style={"width": "100%"}),
+            #             html.Div([
+            #                 dcc.Input(
+            #                     id="Input-max-7",
+            #                     type="text",
+            #                     placeholder="max. Emerging Markets Equity"),
+            #             ], style={"width": "100%"}),
+            #             html.Div([
+            #                 dcc.Input(
+            #                     id="Input-max-8",
+            #                     type="text",
+            #                     placeholder="max. Real Estate"),
+            #             ], style={"width": "100%"}),
+            #             html.Div(id="output-maximum")
+            #         ], style={'margin-left': '27%'}),
+            #         html.Div([
+            #             html.Button('Submit Maximum Selection', id='submit-maximum', n_clicks=0)
+            #         ], style={'width': f'{100}%', 'display': 'inline-block',
+            #                   'align': 'center', 'padding': '10px',
+            #                   'textAlign': 'center',
+            #                   'font-size': '24px'}),
+            #     ], style=Styles.STYLE(35)),
+            #     html.Div([], style={'width': f'{5}%', 'display': 'inline-block'}),
+            #     html.Hr()
+            # ])
         ])
 
     elif tab == 'tab-3':
@@ -751,60 +722,60 @@ def render_content(tab):
                 )
             ], style={"width": "30%", 'margin-left': '34.5%'}),
             html.Hr(),
-            html.H3("The following minimum values for each asset class have been selected:"),
-            html.Br(),
-            html.Div([
-                dash_table.DataTable(
-                    id='stat_table',
-                    columns=[{'name': i, 'id': i} for i in dh.selected_assets_minimums()[0].columns],
-                    style_cell_conditional=[],
-                    style_as_list_view=False,
-                    style_cell={'padding': '5px', 'border-radius': '50px'},
-                    style_header={'backgroundColor': Styles.blues1, 'fontWeight': 'bold', 'color': 'white',
-                                  'border': '1px solid grey', 'height': '50px', 'font-size': '16px'},
-                    style_data_conditional=[{'if': {'row_index': 'odd'}, 'backgroundColor': '#DDEBF7'},
-                                            {'if': {'row_index': 'even'}, 'backgroundColor': '#F2F2F2'},
-                                            {'if': {'filter_query': '{Selected} > 0',
-                                                    'column_id': 'Selected'},
-                                             'backgroundColor': Styles.lightRed, 'color': 'black'},
-                                            ],
-                    style_table={'border': '1px solid lightgrey',
-                                 'borderRadius': '10px',
-                                 'overflow': 'hidden',
-                                 'box-shadow': '5px 4px 5px 5px lightgrey'},
-                    style_data={'border': '1px solid grey', 'font-size': '12px'},
-                    data=dh.selected_assets_minimums()[0].to_dict('records'),
-
-                )
-            ], style={"width": "30%", 'align': 'center', 'margin-left': '34.5%'}),
-            html.Br(),
-            html.Hr(),
-            html.H3("The following maximum values for each asset class have been selected:"),
-            html.Br(),
-            html.Div([
-                dash_table.DataTable(
-                    id='stat_table',
-                    columns=[{'name': i, 'id': i} for i in dh.selected_assets_minimums()[0].columns],
-                    style_cell_conditional=[],
-                    style_as_list_view=False,
-                    style_cell={'padding': '5px', 'border-radius': '50px'},
-                    style_header={'backgroundColor': Styles.blues1, 'fontWeight': 'bold', 'color': 'white',
-                                  'border': '1px solid grey', 'height': '50px', 'font-size': '16px'},
-                    style_data_conditional=[{'if': {'row_index': 'odd'}, 'backgroundColor': '#DDEBF7'},
-                                            {'if': {'row_index': 'even'}, 'backgroundColor': '#F2F2F2'},
-                                            {'if': {'filter_query': '{Selected} > 0',
-                                                    'column_id': 'Selected'},
-                                             'backgroundColor': Styles.lightRed, 'color': 'black'},
-                                            ],
-                    style_table={'border': '1px solid lightgrey',
-                                 'borderRadius': '10px',
-                                 'overflow': 'hidden',
-                                 'box-shadow': '5px 4px 5px 5px lightgrey'},
-                    style_data={'border': '1px solid grey', 'font-size': '12px'},
-                    data=dh.selected_assets_minimums()[0].to_dict('records'),
-
-                )
-            ], style={"width": "30%", 'align': 'center', 'margin-left': '34.5%'}),
+            # html.H3("The following minimum values for each asset class have been selected:"),
+            # html.Br(),
+            # html.Div([
+            #     dash_table.DataTable(
+            #         id='stat_table',
+            #         columns=[{'name': i, 'id': i} for i in dh.selected_assets_minimums()[0].columns],
+            #         style_cell_conditional=[],
+            #         style_as_list_view=False,
+            #         style_cell={'padding': '5px', 'border-radius': '50px'},
+            #         style_header={'backgroundColor': Styles.blues1, 'fontWeight': 'bold', 'color': 'white',
+            #                       'border': '1px solid grey', 'height': '50px', 'font-size': '16px'},
+            #         style_data_conditional=[{'if': {'row_index': 'odd'}, 'backgroundColor': '#DDEBF7'},
+            #                                 {'if': {'row_index': 'even'}, 'backgroundColor': '#F2F2F2'},
+            #                                 {'if': {'filter_query': '{Selected} > 0',
+            #                                         'column_id': 'Selected'},
+            #                                  'backgroundColor': Styles.lightRed, 'color': 'black'},
+            #                                 ],
+            #         style_table={'border': '1px solid lightgrey',
+            #                      'borderRadius': '10px',
+            #                      'overflow': 'hidden',
+            #                      'box-shadow': '5px 4px 5px 5px lightgrey'},
+            #         style_data={'border': '1px solid grey', 'font-size': '12px'},
+            #         data=dh.selected_assets_minimums()[0].to_dict('records'),
+            #
+            #     )
+            # ], style={"width": "30%", 'align': 'center', 'margin-left': '34.5%'}),
+            # html.Br(),
+            # html.Hr(),
+            # html.H3("The following maximum values for each asset class have been selected:"),
+            # html.Br(),
+            # html.Div([
+            #     dash_table.DataTable(
+            #         id='stat_table',
+            #         columns=[{'name': i, 'id': i} for i in dh.selected_assets_minimums()[0].columns],
+            #         style_cell_conditional=[],
+            #         style_as_list_view=False,
+            #         style_cell={'padding': '5px', 'border-radius': '50px'},
+            #         style_header={'backgroundColor': Styles.blues1, 'fontWeight': 'bold', 'color': 'white',
+            #                       'border': '1px solid grey', 'height': '50px', 'font-size': '16px'},
+            #         style_data_conditional=[{'if': {'row_index': 'odd'}, 'backgroundColor': '#DDEBF7'},
+            #                                 {'if': {'row_index': 'even'}, 'backgroundColor': '#F2F2F2'},
+            #                                 {'if': {'filter_query': '{Selected} > 0',
+            #                                         'column_id': 'Selected'},
+            #                                  'backgroundColor': Styles.lightRed, 'color': 'black'},
+            #                                 ],
+            #         style_table={'border': '1px solid lightgrey',
+            #                      'borderRadius': '10px',
+            #                      'overflow': 'hidden',
+            #                      'box-shadow': '5px 4px 5px 5px lightgrey'},
+            #         style_data={'border': '1px solid grey', 'font-size': '12px'},
+            #         data=dh.selected_assets_minimums()[0].to_dict('records'),
+            #
+            #     )
+            # ], style={"width": "30%", 'align': 'center', 'margin-left': '34.5%'}),
             html.Br(),
             html.Div([
                 dbc.Nav(

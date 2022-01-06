@@ -37,5 +37,4 @@ def monte_carlo_simulation(scenario):
     std = int(df.iloc[-1, :].std())
     min = int(df.iloc[-1, :].min())
     max = int(df.iloc[-1, :].max())
-
-    return mean, std, min, max
+    return mean, std, max, min
