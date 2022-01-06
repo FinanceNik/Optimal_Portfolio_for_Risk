@@ -108,7 +108,7 @@ def backtesting_SQL_population():
     df = dataframe_population()
     portValue_list = df['portfolio_value'].to_list()
 
-    connection = sqlite3.connect('Test.db')
+    connection = sqlite3.connect('Database.db')
     c = connection.cursor()
     try:
         c.execute("""CREATE TABLE backtesting_portfolio_values (

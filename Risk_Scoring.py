@@ -2,7 +2,7 @@ import sqlite3
 
 
 def Weights(Variable):
-    connection = sqlite3.connect('Test.db')
+    connection = sqlite3.connect('Database.db')
     c = connection.cursor()
     c.execute(f"SELECT Value FROM questionnaire WHERE VariableName='{Variable}'")
     one = c.fetchone()

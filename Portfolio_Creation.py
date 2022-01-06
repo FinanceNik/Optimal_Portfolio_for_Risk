@@ -57,7 +57,7 @@ def optimal_portfolio():
     def constraint_matrix():
 
         def fetch_assets():
-            conn = sqlite3.connect('Test.db')
+            conn = sqlite3.connect('Database.db')
             cur = conn.cursor()
             cur.execute("SELECT * FROM asset_constraints")
             rows = cur.fetchmany(size=20)

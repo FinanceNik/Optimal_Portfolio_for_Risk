@@ -5,7 +5,7 @@ import numpy as np
 
 
 def SQL_Populator_Questionnaire(input_list):
-    connection = sqlite3.connect('Test.db')
+    connection = sqlite3.connect('Database.db')
     c = connection.cursor()
     try:
         c.execute("""CREATE TABLE questionnaire (
@@ -56,7 +56,7 @@ def SQL_Populator_Questionnaire(input_list):
 
 
 def SQL_Populator_Constraints_Assets(value_list):
-    connection = sqlite3.connect('Test.db')
+    connection = sqlite3.connect('Database.db')
     c = connection.cursor()
     try:
         c.execute("""DROP TABLE asset_constraints""")
@@ -78,7 +78,7 @@ def SQL_Populator_Constraints_Assets(value_list):
 
 
 def SQL_Populator_Constraints_Minimums(value_list):
-    connection = sqlite3.connect('Test.db')
+    connection = sqlite3.connect('Database.db')
     c = connection.cursor()
     try:
         c.execute("""DROP TABLE asset_minimums""")
@@ -100,7 +100,7 @@ def SQL_Populator_Constraints_Minimums(value_list):
 
 
 def questionnaire_answers(question):
-    c = sqlite3.connect('Test.db')
+    c = sqlite3.connect('Database.db')
     cur = c.cursor()
     cur.execute(f"SELECT Value FROM questionnaire WHERE VariableName='{question}'")
     one = cur.fetchone()
@@ -113,7 +113,7 @@ def questionnaire_answers(question):
 def selected_assets():
     full_asset_list = ['CA', 'BO', 'BOFC', 'SE', 'GE', 'GES', 'EME', 'RE']
     selected_list = []
-    c = sqlite3.connect('Test.db')
+    c = sqlite3.connect('Database.db')
     cur = c.cursor()
     for i in range(8):
         try:
@@ -137,7 +137,7 @@ def selected_assets():
 
 # def selected_assets_minimums():
 #     selected_list = []
-#     c = sqlite3.connect('Test.db')
+#     c = sqlite3.connect('Database.db')
 #     cur = c.cursor()
 #     for i in range(8):
 #         try:
@@ -158,7 +158,7 @@ def selected_assets():
 
 def selected_portfolio_weights():
     selected_list = []
-    c = sqlite3.connect('Test.db')
+    c = sqlite3.connect('Database.db')
     cur = c.cursor()
     for i in range(8):
         try:
@@ -178,7 +178,7 @@ def selected_portfolio_weights():
 
 
 def populate_weights(index, values):
-    connection = sqlite3.connect('Test.db')
+    connection = sqlite3.connect('Database.db')
     c = connection.cursor()
     try:
         c.execute("""CREATE TABLE portfolioWeights (
@@ -203,7 +203,7 @@ def populate_weights(index, values):
 
 
 def populate_volatility_AND_return(index, values):
-    connection = sqlite3.connect('Test.db')
+    connection = sqlite3.connect('Database.db')
     c = connection.cursor()
     try:
         c.execute("""CREATE TABLE portfolio_volatility_AND_return (
@@ -228,7 +228,7 @@ def populate_volatility_AND_return(index, values):
 
 
 def populate_historical_volatility(vola):
-    connection = sqlite3.connect('Test.db')
+    connection = sqlite3.connect('Database.db')
     c = connection.cursor()
     try:
         c.execute("""CREATE TABLE portfolio_historical_volatility (
@@ -252,7 +252,7 @@ def populate_historical_volatility(vola):
 
 
 def historical_volatility():
-    c = sqlite3.connect('Test.db')
+    c = sqlite3.connect('Database.db')
     cur = c.cursor()
     try:
         cur.execute(f"SELECT Value FROM portfolio_historical_volatility WHERE VariableName='volatility'")
@@ -268,7 +268,7 @@ def portfolio_backtesting_values_lists():
     df = df.iloc[::-1]
     dateList = df['Date'].to_list()
     backtesting_values = []
-    c = sqlite3.connect('Test.db')
+    c = sqlite3.connect('Database.db')
     cur = c.cursor()
 
     for i in range(len(df.index)):
