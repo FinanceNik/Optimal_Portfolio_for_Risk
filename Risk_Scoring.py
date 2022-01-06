@@ -178,3 +178,6 @@ def risk_capacity_scoring():
             return 'very high', 5
     except:
         return "none", 0
+
+
+

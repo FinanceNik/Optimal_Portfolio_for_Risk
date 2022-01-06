@@ -7,17 +7,19 @@ def monte_carlo_simulation(scenario):
     df = pd.DataFrame()
 
     # The number of scenarios that shall be repeated to get the Monte Carlo Simulation
-    num_of_scenarios = 1_000
+    num_of_scenarios = 1_000  # <-- Due to long loading times, we could to more iterations.
 
     for i in range(num_of_scenarios):
 
+        # The expected return is forward looking and compiled by a sumproduct of the chose portfolio's asset weights
+        # times the expected return for each asset under a scenario.
         # --> Scenario can be: ['bull', 'bear', 'neutral']
         if scenario == 'bear':
-            expected_return = 0.03
+            expected_return = dh.forward_looking_expected_return('bear')
         elif scenario == 'bull':
-            expected_return = 0.11
+            expected_return = dh.forward_looking_expected_return('bull')
         elif scenario == 'neutral':
-            expected_return = 0.06
+            expected_return = dh.forward_looking_expected_return('neutral')
 
         investment = 2_000_000  # <-- Initial Investment set to CHF 2 mil.
         volatility = float(dh.historical_volatility())  # <-- This has to be the volatility of the created portfolio!
@@ -33,8 +35,9 @@ def monte_carlo_simulation(scenario):
         df[i] = lst
 
     # print(df)
+    # --> From the dataframe of all the scenarios, mean, standard deviation, minimum and maximum values are calculated.
     mean = int(df.iloc[-1, :].mean())
     std = int(df.iloc[-1, :].std())
-    min = int(df.iloc[-1, :].min())
-    max = int(df.iloc[-1, :].max())
-    return mean, std, max, min
+    minimum = int(df.iloc[-1, :].min())
+    maximum = int(df.iloc[-1, :].max())
+    return mean, std, maximum, minimum

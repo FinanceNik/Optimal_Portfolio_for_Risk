@@ -1,6 +1,7 @@
 import sqlite3
 import pandas as pd
 import Risk_Scoring
+import numpy as np
 
 
 def SQL_Populator_Questionnaire(input_list):
@@ -280,13 +281,21 @@ def portfolio_backtesting_values_lists():
     return dateList, backtesting_values
 
 
-def show_table_x():
-    conn = sqlite3.connect('Test.db')
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM portfolioWeights")
-    colnames = cur.description
-    for row in colnames:
-        print(row[0])
-    rows = cur.fetchmany(size=20)
-    for row in rows:
-        print(row[1])
+def forward_looking_expected_return(scenario):
+    # The scenario expected returns described in the paper.
+    # --> positioning: [CA, BO, BOFC, SE, GE, GES, EME, RE]
+    # --> Scenario can be: ['bull', 'bear', 'neutral']
+    if scenario == 'bull':
+        expected_return = [0.0000, 0.0228, 0.0242, 0.1141, 0.1157, 0.1244, 0.1154, 0.0412]
+    elif scenario == 'neutral':
+        expected_return = [0.0000, 0.0166, 0.0177, 0.1020, 0.1044, 0.1048, 0.0810, 0.0336]
+    elif scenario == 'bear':
+        expected_return = [0.0000, 0.0108, 0.0126, 0.0552, 0.0573, 0.0810, 0.0504, 0.0248]
+
+    # The weights of the constructed portfolio
+    asset_weights = selected_portfolio_weights()[1]
+
+    # Numpy's dot formula is a sumproduct of two arrays, equivalent to Excel's =SUMPRODUCT(X, Y)
+    forward_looking_return = np.dot(expected_return, asset_weights)
+    return forward_looking_return
+
