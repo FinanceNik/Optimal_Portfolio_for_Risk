@@ -250,7 +250,7 @@ def render_page_content(pathname):
                                       'mode': 'line',
                                       'line': {'width': 8}}],
                             'layout': {'title': 'Portfolio Backtesting (01.01.2007 = 100.000)',
-                                       'xaxis': {'title': 'Time as Date Stamps'},
+                                       'xaxis': {'title': 'Time as Date Stamps', 'tickangle': 45},
                                        'yaxis': {'title': 'Portfolio Value'}}}
                 ),
             ], style=Styles.STYLE(100)),
@@ -472,6 +472,15 @@ def render_content(tab):
             html.Div([
                 html.Div([
                     html.H5('Tick the assets that should be included in the client\'s portfolio.'),
+                    html.Div([html.I('Important Note:')], style={'fontWeight': 'bold'}),
+                    html.I('You can only remove assets from a portfolio with absolut certainty by un-ticking'),
+                    html.Br(),
+                    html.I(' the respective box. It is not given, however, that an asset class will be added '),
+                    html.Br(),
+                    html.I('to one`s portfolio if the tool does not recognize it as a fitting class for'),
+                    html.Br(),
+                    html.I('the respective risk/return characteristics of the portfolio.'),
+                    html.Hr(),
                 ], style={'textAlign': 'center'}),
                 html.Div([
                     html.Div([

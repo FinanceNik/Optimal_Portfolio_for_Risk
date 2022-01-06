@@ -63,6 +63,7 @@ def optimal_portfolio():
             rows = cur.fetchmany(size=20)
             assets = [x[1] for x in rows]
             return assets
+
         all_assets = ['CA', 'BO', 'BOFC', 'SE', 'GE', 'GES', 'EME', 'RE']
         selected_assets = fetch_assets()
         asset_selected = [True if x in selected_assets else False for x in all_assets]
@@ -121,8 +122,8 @@ def optimal_portfolio():
             final_minimums.append(min_weights[item])
             final_maximums.append(max_weights[item])
         else:
-            final_minimums.append(0.0)
-            final_maximums.append(1.0)
+            final_minimums.append(0.9)
+            final_maximums.append(1)
 
     for portfolio in range(num_portfolios):
         weights = np.array(
