@@ -167,8 +167,8 @@ def optimal_portfolio():
 
     dh.populate_weights(weight_index, weight_values)
     dh.populate_volatility_AND_return(portfolio_volatility_AND_return_index, portfolio_volatility_AND_return_values)
+    dh.populate_historical_volatility(max_sharpe_ratio[1])
     Backtesting.backtesting_SQL_population()
-
     return max_sharpe_ratio[1], max_sharpe_ratio[0]
 
 

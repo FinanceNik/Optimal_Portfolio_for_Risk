@@ -265,14 +265,6 @@ def render_page_content(pathname):
 
                 )
             ], style={"width": "30%", 'align': 'center', 'margin-left': '34.5%'}),
-            # html.Div([
-            #     html.Div([
-            #         html.Img(src=app.get_asset_url('portfolio.png'))
-            #     ], style={'height': '1%', 'width': '5%'}),
-            # ], style={'width': f'{100}%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
-            #           'box-shadow': Styles.boxshadow,
-            #           'borderRadius': '10px',
-            #           'overflow': 'hidden'}),
             html.Hr(),
             html.Div([
                 dcc.Graph(

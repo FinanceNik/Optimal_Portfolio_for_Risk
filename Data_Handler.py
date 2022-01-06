@@ -226,6 +226,41 @@ def populate_volatility_AND_return(index, values):
             pass
 
 
+def populate_historical_volatility(vola):
+    connection = sqlite3.connect('Test.db')
+    c = connection.cursor()
+    try:
+        c.execute("""CREATE TABLE portfolio_historical_volatility (
+                    VariableName text,
+                    Value real
+                    )""")
+    except:
+        pass
+
+    try:
+        c.execute(f"DELETE FROM portfolio_historical_volatility WHERE VariableName='volatility'")
+        connection.commit()
+    except:
+        pass
+    try:
+        c.execute("INSERT INTO portfolio_historical_volatility VALUES (:VariableName,:Value)",
+                  {'VariableName': 'volatility', 'Value': vola})
+        connection.commit()
+    except:
+        pass
+
+
+def historical_volatility():
+    c = sqlite3.connect('Test.db')
+    cur = c.cursor()
+    try:
+        cur.execute(f"SELECT Value FROM portfolio_historical_volatility WHERE VariableName='volatility'")
+        one = cur.fetchone()
+    except:
+        one = 'ERROR'
+    return one[0]
+
+
 def portfolio_backtesting_values_lists():
 
     df = pd.read_csv('data.csv')
