@@ -33,10 +33,9 @@ def monte_carlo_simulation(scenario):
         df[i] = lst
 
     # print(df)
-    print('Mean: ', round(df.iloc[-1, :].mean(), 0))
-    print('STD: ', round(df.iloc[-1, :].std(), 0))
-    print('MAX: ', round(df.iloc[-1, :].max(), 0))
-    print('Min: ', round(df.iloc[-1, :].min(), 0))
+    mean = int(df.iloc[-1, :].mean())
+    std = int(df.iloc[-1, :].std())
+    min = int(df.iloc[-1, :].min())
+    max = int(df.iloc[-1, :].max())
 
-
-monte_carlo_simulation('bear')
+    return mean, std, min, max

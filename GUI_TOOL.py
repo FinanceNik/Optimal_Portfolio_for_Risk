@@ -9,6 +9,7 @@ import Styles
 import Data_Handler as dh
 import Portfolio_Creation as pc
 import Risk_Scoring
+from Monte_Carlo_Simulation import monte_carlo_simulation as mcs
 warnings.simplefilter("ignore", UserWarning)
 
 app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -233,6 +234,9 @@ def render_page_content(pathname):
             ]),
             html.Hr(),
             html.Div([
+                html.H3('Portfolio Backtesting'),
+            ], style={'width': '100%', 'display': 'inline-block', 'align': 'right', 'padding': Styles.graph_padding}),
+            html.Div([
                 dcc.Graph(
                     id='Portfolio Backtesting Graph',
                     figure={'data': [{'x': dh.portfolio_backtesting_values_lists()[0],
@@ -248,6 +252,9 @@ def render_page_content(pathname):
             ], style=Styles.STYLE(100)),
             html.Hr(),
             html.Div([
+                html.H3('Portfolio Asset Allocation'),
+            ], style={'width': '100%', 'display': 'inline-block', 'align': 'right', 'padding': Styles.graph_padding}),
+            html.Div([
                 dash_table.DataTable(
                     id='stat_table',
                     columns=[{'name': i, 'id': i} for i in dh.selected_portfolio_weights()[0].columns],
@@ -261,10 +268,44 @@ def render_page_content(pathname):
                                  'overflow': 'hidden',
                                  'box-shadow': '5px 4px 5px 5px lightgrey'},
                     style_data={'border': '1px solid grey', 'font-size': '12px'},
+                    style_data_conditional=[{'if': {'row_index': 'odd'}, 'backgroundColor': '#DDEBF7'},
+                                            {'if': {'row_index': 'even'}, 'backgroundColor': '#F2F2F2'},
+                                            ],
                     data=dh.selected_portfolio_weights()[0].to_dict('records'),
 
                 )
             ], style={"width": "30%", 'align': 'center', 'margin-left': '34.5%'}),
+            html.Hr(),
+            html.Div([
+                html.H3('Monte Carlo Simulation'),
+            ], style={'width': '100%', 'display': 'inline-block', 'align': 'right', 'padding': Styles.graph_padding}),
+            html.Div([
+                html.H5('Bull Scenario'),
+            ], style={'width': '100%', 'display': 'inline-block', 'align': 'right', 'padding': Styles.graph_padding}),
+            html.Div([
+                Styles.kpiboxes('Mean Portf. Value:', "{:,}".format(mcs('bull')[0]), Styles.lightRed),
+                Styles.kpiboxes('Standard Dev.:', "{:,}".format(mcs('bull')[1]), Styles.accblue),
+                Styles.kpiboxes('Max Portf. Value:', "{:,}".format(mcs('bull')[2]), Styles.accblue),
+                Styles.kpiboxes('Min Portf. Value:', "{:,}".format(mcs('bull')[3]), Styles.accblue),
+            ]),
+            html.Div([
+                html.H5('Bear Scenario'),
+            ], style={'width': '100%', 'display': 'inline-block', 'align': 'right', 'padding': Styles.graph_padding}),
+            html.Div([
+                Styles.kpiboxes('Mean Portf. Value:', "{:,}".format(mcs('bear')[0]), Styles.lightRed),
+                Styles.kpiboxes('Standard Dev.:', "{:,}".format(mcs('bear')[1]), Styles.accblue),
+                Styles.kpiboxes('Max Portf. Value:', "{:,}".format(mcs('bear')[2]), Styles.accblue),
+                Styles.kpiboxes('Min Portf. Value:', "{:,}".format(mcs('bear')[3]), Styles.accblue),
+            ]),
+            html.Div([
+                html.H5('Neutral Scenario'),
+            ], style={'width': '100%', 'display': 'inline-block', 'align': 'right', 'padding': Styles.graph_padding}),
+            html.Div([
+                Styles.kpiboxes('Mean Portf. Value:', "{:,}".format(mcs('neutral')[0]), Styles.lightRed),
+                Styles.kpiboxes('Standard Dev.:', "{:,}".format(mcs('neutral')[1]), Styles.accblue),
+                Styles.kpiboxes('Max Portf. Value:', "{:,}".format(mcs('neutral')[2]), Styles.accblue),
+                Styles.kpiboxes('Min Portf. Value:', "{:,}".format(mcs('neutral')[3]), Styles.accblue),
+            ]),
             html.Hr(),
             html.Div([
                 dcc.Graph(
