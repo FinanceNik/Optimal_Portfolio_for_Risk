@@ -11,7 +11,7 @@ def monte_carlo_simulation(scenario):
 
     for i in range(num_of_scenarios):
 
-        # The expected return is forward looking and compiled by a sumproduct of the chose portfolio's asset weights
+        # The expected return is forward-looking and compiled by a sumproduct of the chose portfolio's asset weights
         # times the expected return for each asset under a scenario.
         # --> Scenario can be: ['bull', 'bear', 'neutral']
         if scenario == 'bear':

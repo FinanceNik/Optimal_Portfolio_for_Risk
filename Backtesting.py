@@ -101,9 +101,8 @@ def dataframe_population():
 
     return df
 
+
 # now, we are saving the backtesting portfolio values into a database in order to generate a graph later.
-
-
 def backtesting_SQL_population():
     df = dataframe_population()
     portValue_list = df['portfolio_value'].to_list()
