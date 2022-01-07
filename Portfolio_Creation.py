@@ -115,9 +115,9 @@ def optimal_portfolio():
     # not be able to run. Accordingly, the try and except clause allows the GUI to start regardless of that and then
     # the user can fill out the form properly.
     try:
-        risk_cap = Risk_Scoring.risk_willingness_scoring()[1] + Risk_Scoring.risk_capacity_scoring()[1]
-        min_weights = list(minimum_matrix[str(risk_cap)])
-        max_weights = list(maximum_matrix[str(risk_cap)])
+        user_risk = Risk_Scoring.risk_willingness_scoring()[1] + Risk_Scoring.risk_capacity_scoring()[1]
+        min_weights = list(minimum_matrix[str(user_risk)])
+        max_weights = list(maximum_matrix[str(user_risk)])
 
         # Now, overwrite the min_weights if the asset is not selected at all!
         final_minimums = []
