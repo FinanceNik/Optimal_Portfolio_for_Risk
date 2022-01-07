@@ -328,3 +328,10 @@ def forward_looking_expected_return(scenario):
     forward_looking_return = np.dot(expected_return, asset_weights)
     return forward_looking_return
 
+
+def Answer(question):
+    connection = sqlite3.connect('Database.db')
+    c = connection.cursor()
+    c.execute(f"SELECT Value FROM questionnaire WHERE VariableName='{question}'")
+    one = c.fetchone()
+    return one[0]

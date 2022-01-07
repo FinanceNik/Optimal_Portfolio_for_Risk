@@ -1,18 +1,10 @@
-import sqlite3
-
-
-def Weights(Variable):
-    connection = sqlite3.connect('Database.db')
-    c = connection.cursor()
-    c.execute(f"SELECT Value FROM questionnaire WHERE VariableName='{Variable}'")
-    one = c.fetchone()
-    return one[0]
+import Data_Handler as dh
 
 
 def risk_willingness_scoring():
     try:
         def knowledge_FM():
-            answer = Weights('Question_0')
+            answer = dh.Answer('Question_0')
             if answer == 'never':
                 return 1
             elif answer == 'seldom':
@@ -25,7 +17,7 @@ def risk_willingness_scoring():
                 return 5
 
         def knowledge_FI():
-            answer = Weights('Question_1')
+            answer = dh.Answer('Question_1')
             if answer == '< 1':
                 return 1
             elif answer == '1 - 3':
@@ -38,7 +30,7 @@ def risk_willingness_scoring():
                 return 5
 
         def risk_return_pref():
-            answer = Weights('Question_2')
+            answer = dh.Answer('Question_2')
             if answer == '-2 to +2%':
                 return 1
             elif answer == '-5 to +5%':
@@ -51,7 +43,7 @@ def risk_willingness_scoring():
                 return 5
 
         def behavior_falling_prices():
-            answer = Weights('Question_3')
+            answer = dh.Answer('Question_3')
             if answer == 'Liquidate all positions.':
                 return 1
             elif answer == 'Liquidate all negative positions.':
@@ -64,7 +56,7 @@ def risk_willingness_scoring():
                 return 5
 
         def risk_return_distribution():
-            answer = Weights('Question_4')
+            answer = dh.Answer('Question_4')
             if answer == 'First and foremost, I want safety and stability.':
                 return 1
             elif answer == 'I would take slight risk to increase my return.':
@@ -105,7 +97,7 @@ def risk_willingness_scoring():
 def risk_capacity_scoring():
     try:
         def liquidity():
-            answer = Weights('Question_5')
+            answer = dh.Answer('Question_5')
             if answer == '< 20%':
                 return 1
             elif answer == '20 - 40%':
@@ -118,7 +110,7 @@ def risk_capacity_scoring():
                 return 5
 
         def horizon():
-            answer = Weights('Question_6')
+            answer = dh.Answer('Question_6')
             if answer == 'In less than 2 years.':
                 return 1
             elif answer == 'In about 4 years.':
@@ -131,7 +123,7 @@ def risk_capacity_scoring():
                 return 5
 
         def savingsrate():
-            answer = Weights('Question_7')
+            answer = dh.Answer('Question_7')
             if answer == 'I have higher costs than income.':
                 return 1
             elif answer == 'My costs and income are equal.':
@@ -144,7 +136,7 @@ def risk_capacity_scoring():
                 return 5
 
         def reserves():
-            answer = Weights('Question_8')
+            answer = dh.Answer('Question_8')
             if answer == 'Less than 2 years.':
                 return 1
             elif answer == '2 to 6 years.':

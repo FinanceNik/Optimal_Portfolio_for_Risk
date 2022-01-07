@@ -110,67 +110,74 @@ def optimal_portfolio():
         '9': [1, 1, 1, 100, 100, 100, 100, 100],
         '10': [1, 1, 1, 100, 100, 100, 100, 1],
     }
-    risk_cap = Risk_Scoring.risk_willingness_scoring()[1] + Risk_Scoring.risk_capacity_scoring()[1]
-    min_weights = list(minimum_matrix[str(risk_cap)])
-    max_weights = list(maximum_matrix[str(risk_cap)])
+    # This try and except clause has been instantiated because the GUI would not run of the user had previously
+    # not filled out the questionnaire in full or at all. Then no risk score would be produced and this function would
+    # not be able to run. Accordingly, the try and except clause allows the GUI to start regardless of that and then
+    # the user can fill out the form properly.
+    try:
+        risk_cap = Risk_Scoring.risk_willingness_scoring()[1] + Risk_Scoring.risk_capacity_scoring()[1]
+        min_weights = list(minimum_matrix[str(risk_cap)])
+        max_weights = list(maximum_matrix[str(risk_cap)])
 
-    # Now, overwrite the min_weights if the asset is not selected at all!
-    final_minimums = []
-    final_maximums = []
-    for item in range(len(constraint_matrix())):
-        if constraint_matrix()[item] is True:
-            final_minimums.append(min_weights[item])
-            final_maximums.append(max_weights[item])
-        else:
-            final_minimums.append(0.9)
-            final_maximums.append(1)
+        # Now, overwrite the min_weights if the asset is not selected at all!
+        final_minimums = []
+        final_maximums = []
+        for item in range(len(constraint_matrix())):
+            if constraint_matrix()[item] is True:
+                final_minimums.append(min_weights[item])
+                final_maximums.append(max_weights[item])
+            else:
+                final_minimums.append(0.9)
+                final_maximums.append(1)
 
-    for portfolio in range(num_portfolios):
-        weights = np.array(
-            [
-                np.random.randint(final_minimums[0], final_maximums[0])/100,
-                np.random.randint(final_minimums[1], final_maximums[1])/100,
-                np.random.randint(final_minimums[2], final_maximums[2])/100,
-                np.random.randint(final_minimums[3], final_maximums[3])/100,
-                np.random.randint(final_minimums[4], final_maximums[4])/100,
-                np.random.randint(final_minimums[5], final_maximums[5])/100,
-                np.random.randint(final_minimums[6], final_maximums[6])/100,
-                np.random.randint(final_minimums[7], final_maximums[7])/100
-            ]
-        )
+        for portfolio in range(num_portfolios):
+            weights = np.array(
+                [
+                    np.random.randint(final_minimums[0], final_maximums[0])/100,
+                    np.random.randint(final_minimums[1], final_maximums[1])/100,
+                    np.random.randint(final_minimums[2], final_maximums[2])/100,
+                    np.random.randint(final_minimums[3], final_maximums[3])/100,
+                    np.random.randint(final_minimums[4], final_maximums[4])/100,
+                    np.random.randint(final_minimums[5], final_maximums[5])/100,
+                    np.random.randint(final_minimums[6], final_maximums[6])/100,
+                    np.random.randint(final_minimums[7], final_maximums[7])/100
+                ]
+            )
 
-        weights = weights / np.sum(weights)
+            weights = weights / np.sum(weights)
 
-        p_weights.append(weights)
+            p_weights.append(weights)
 
-        # Because Returns are already calculated here, the weight constraints have to be implemented above.
-        returns = np.dot(weights, ind_er)
-        p_returns.append(returns)
-        var = cov_matrix.mul(weights, axis=0).mul(weights, axis=1).sum().sum()  # Portfolio Variance
-        sd = np.sqrt(var)
-        ann_sd = sd * np.sqrt(12)
-        p_volatility.append(ann_sd)
+            # Because Returns are already calculated here, the weight constraints have to be implemented above.
+            returns = np.dot(weights, ind_er)
+            p_returns.append(returns)
+            var = cov_matrix.mul(weights, axis=0).mul(weights, axis=1).sum().sum()  # Portfolio Variance
+            sd = np.sqrt(var)
+            ann_sd = sd * np.sqrt(12)
+            p_volatility.append(ann_sd)
 
-    data = {'Returns': p_returns, 'Volatility': p_volatility}
+        data = {'Returns': p_returns, 'Volatility': p_volatility}
 
-    for counter, symbol in enumerate(df_raw.columns[1:].tolist()):
-        data[symbol + ' weight'] = [w[counter] for w in p_weights]
+        for counter, symbol in enumerate(df_raw.columns[1:].tolist()):
+            data[symbol + ' weight'] = [w[counter] for w in p_weights]
 
-    portfolios = pd.DataFrame(data)
+        portfolios = pd.DataFrame(data)
 
-    rf = - 0.008  # rf is the risk-free interest rate.
-    max_sharpe_ratio = portfolios.iloc[((portfolios['Returns'] - rf) / portfolios['Volatility']).idxmax()]
+        rf = - 0.008  # rf is the risk-free interest rate.
+        max_sharpe_ratio = portfolios.iloc[((portfolios['Returns'] - rf) / portfolios['Volatility']).idxmax()]
 
-    weight_index = list(max_sharpe_ratio.index)[2:]
-    weight_values = list(round(max_sharpe_ratio, 5))[2:]
-    portfolio_volatility_AND_return_index = list(max_sharpe_ratio.index)[:2]
-    portfolio_volatility_AND_return_values = list(round(max_sharpe_ratio, 5))[:2]
+        weight_index = list(max_sharpe_ratio.index)[2:]
+        weight_values = list(round(max_sharpe_ratio, 5))[2:]
+        portfolio_volatility_AND_return_index = list(max_sharpe_ratio.index)[:2]
+        portfolio_volatility_AND_return_values = list(round(max_sharpe_ratio, 5))[:2]
 
-    dh.populate_weights(weight_index, weight_values)
-    dh.populate_volatility_AND_return(portfolio_volatility_AND_return_index, portfolio_volatility_AND_return_values)
-    dh.populate_historical_volatility(max_sharpe_ratio[1])
-    Backtesting.backtesting_SQL_population()
-    return max_sharpe_ratio[1], max_sharpe_ratio[0]
+        dh.populate_weights(weight_index, weight_values)
+        dh.populate_volatility_AND_return(portfolio_volatility_AND_return_index, portfolio_volatility_AND_return_values)
+        dh.populate_historical_volatility(max_sharpe_ratio[1])
+        Backtesting.backtesting_SQL_population()
+        return max_sharpe_ratio[1], max_sharpe_ratio[0]
+    except:
+        pass
 
 
 optimal_portfolio()

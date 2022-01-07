@@ -3,6 +3,8 @@ import Portfolio_Creation as pc
 import Data_Handler as dh
 import warnings
 from pandas.core.common import SettingWithCopyWarning
+# This warning is suppressed as otherwise it is triggered by the insertion of the backtesting values into the DataFrame.
+# This does not have any performance implications, but it helps to keep the terminal clean.
 warnings.simplefilter(action="ignore", category=SettingWithCopyWarning)
 
 # --> A list of all the eight asset classes and their abbreviations used in the data.csv file
