@@ -23,6 +23,8 @@ sidebar = html.Div(
         html.Hr(style={'borderColor': Styles.lightgrey}),
         html.H2("Go To:", className="lead", style={'font-size': '30px'}),
         html.Hr(style={'borderColor': Styles.lightgrey}),
+        # NavLink elements are the buttons that navigate the user to various sections.
+        # In total there are three navigatable sections: Welcome, Input Form, and About.
         dbc.Nav(
             [
                 dbc.NavLink("Welcome", href="/", active="exact"),
@@ -102,6 +104,7 @@ def update_checklist(n_clicks, value_list):
         dh.SQL_Populator_Constraints_Assets(value_list)
 
 
+# This callback saves the answers to each questionnaire question to the database. There are nine questions.
 @app.callback(
     dash.dependencies.Output('dd-output-container', 'children'),
     [dash.dependencies.Input('submit', 'n_clicks'),
@@ -116,22 +119,29 @@ def update_checklist(n_clicks, value_list):
      dash.dependencies.Input('Q_9', 'value')])
 def update_output(n_clicks, value1, value2, value3, value4, value5, value6, value7, value8, value9):
     input_list = [value1, value2, value3, value4, value5, value6, value7, value8, value9]
+    # Only trigger the function that writes the data to the database once the button is clicked at least once.
     if n_clicks > 0:
         dh.SQL_Populator_Questionnaire(input_list)
 
 
+# This is the callback for the main navigation elements: Welcome, Input Form, and About.
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 def render_page_content(pathname):
+    # the / section is the Welcome page. This is the default landing page for the user that introduces him/her to
+    # the tool.
     if pathname == "/":
         return html.Div(children=[
+            # Heading of the Page
             html.Div([html.H1('Optimal Portfolio Creation and Automation Tool')], style={'textAlign': 'center'}),
             html.Hr(),
+            # Introduction text to let the user know what the tool is for.
             html.Div([
                 html.Div(['By using this tool, the customer`s risk capacity as well as risk adversity are defined.']),
                 html.Div(['Furthermore, the above-mentioned metrics are separated numerically scored.']),
                 html.Div(['Lastly, an algorithm will create the best possible portfolio for the selection.']),
             ], style={"font-size": "20px", "textAlign": "center"}),
             html.Hr(),
+            # Here starts the section of the page that lets the user press the button to be navigated to the Input Form.
             html.Div([
                 html.I("Start the Customer Process:"),
             ], style={'font-size': '20px', 'textAlign': 'center'}),
@@ -142,6 +152,7 @@ def render_page_content(pathname):
                     ],
                     vertical=True,
                     pills=True)
+                # Because this element has unique style properties, the STYLES.STYLE function was not used.
             ], style={'margin-left': '40%',
                       'display': 'flex', 'fontWeight': 'bold', 'align-items': 'center', 'justify-content': 'center',
                       'width': '20%', 'align': 'center', 'padding': '10px',
@@ -150,12 +161,13 @@ def render_page_content(pathname):
                       'overflow': 'hidden'}),
 
         ])
-
+    # This function contains the elements for the About page such as pictures and text bodies.
     if pathname == "/about":
         return html.Div(children=[
             html.Div([html.H1('About the Creators...')], style={"textAlign": "center"}),
             html.Hr(),
             html.Div([], style={'width': f'{32}%', 'display': 'inline-block'}),
+            # Display a picture for each creator of the tool.
             html.Div([
                 html.Div([html.Img(src=app.get_asset_url('image.jpg'))], style={'width': f'{17.3}%', 'display': 'inline-block'}),
                 ], style={'width': f'{17.3}%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
@@ -172,6 +184,7 @@ def render_page_content(pathname):
                       'overflow': 'hidden'}),
             html.Div([], style={'width': f'{32}%', 'display': 'inline-block'}),
             html.Div([], style={'width': f'{32}%', 'display': 'inline-block'}),
+            # Short descriptions of the creators and what they are specialized in.
             html.Div([
                 html.Div([html.I("HSLU")], style={'textAlign': 'center'}),
                 html.Div([html.I("MSc Banking & Finance")], style={'textAlign': 'center'}),
@@ -191,6 +204,7 @@ def render_page_content(pathname):
             ], style={'textAlign': 'center', 'width': '17.3%', 'display': 'inline-block'}),
             html.Hr(),
             html.Div([html.H1('About the Tool...')], style={"textAlign": "center"}),
+            # Text body of what this tool was designed for and some background information.
             html.Div([
                 html.P([
                     'This tool has been created as the final project for a masters level university course in Banking and',
@@ -238,28 +252,40 @@ def render_page_content(pathname):
             ], style={'textAlign': 'center', 'width': '100%', 'display': 'inline-block'}),
         ])
 
+    # This is the Result's page that contains all the Dashboard elements.
     elif pathname == "/results":
         return html.Div(children=[
             html.Div([
                 html.H1('Personalized Portfolio Result'),
             ], style={'width': '100%', 'display': 'inline-block', 'align': 'right', 'padding': Styles.graph_padding}),
+            # Display the first row of key performance indicators, triggered via the kpiboxes function located in the
+            # Styles module.
             html.Div([
+                # Show the risk willingness score.
                 Styles.kpiboxes('Risk Capacity Score:',
                                 Risk_Scoring.risk_willingness_scoring()[0], Styles.accblue),
+                # Show the risk adversity score.
                 Styles.kpiboxes('Risk Adversity Score:',
                                 Risk_Scoring.risk_capacity_scoring()[0], Styles.accblue),
+                # Display the historical volatility of the chosen, optimal portfolio.
                 Styles.kpiboxes('Expected Volatiliy Histor.:',
                                 f"{round(pc.optimal_portfolio()[1] * 100, 4)}%", Styles.accblue),
+                # Show the forward looking expected return that is calculated as a sumproduct of the asset allocations
+                # and the expected returns of each asset class under the neutral scenario described in the paper.
                 Styles.kpiboxes('Expected Return Forward:',
                                 f"{round(dh.forward_looking_expected_return('neutral')*100, 4)}%", Styles.accblue),
             ]),
             html.Hr(),
+            # This is the second section of the dashboard that displays the graph with the backtesting values.
             html.Div([
                 html.H3('Portfolio Backtesting'),
             ], style={'width': '100%', 'display': 'inline-block', 'align': 'right', 'padding': Styles.graph_padding}),
             html.Div([
+                # Dash Core Components Graph element.
                 dcc.Graph(
                     id='Portfolio Backtesting Graph',
+                    # Trigger the function in the Data_Handler module that retrieves both the date values as well as
+                    # the backtesting values.
                     figure={'data': [{'x': dh.portfolio_backtesting_values_lists()[0],
                                       'y': dh.portfolio_backtesting_values_lists()[1],
                                       'type': 'line', 'title': "Portfolio Backtesting (01.01.2007 = 100.000)",
@@ -272,12 +298,15 @@ def render_page_content(pathname):
                 ),
             ], style=Styles.STYLE(100)),
             html.Hr(),
+            # The third section of the dashboard that displays a table with the names of the assets and the allocation
+            # given to them by the Portfolio_Creation module function optimal_portfolio.
             html.Div([
                 html.H3('Portfolio Asset Allocation'),
             ], style={'width': '100%', 'display': 'inline-block', 'align': 'right', 'padding': Styles.graph_padding}),
             html.Div([
                 dash_table.DataTable(
                     id='stat_table',
+                    # Call the function that retrieves the asset names and allocations from the database.
                     columns=[{'name': i, 'id': i} for i in dh.selected_portfolio_weights()[0].columns],
                     style_cell_conditional=[],
                     style_as_list_view=False,
@@ -303,18 +332,26 @@ def render_page_content(pathname):
                 )
             ], style={"width": "30%", 'align': 'center', 'margin-left': '34.5%'}),
             html.Hr(),
+            # The fourth and last section of the dashboard that contains three rows of KPI boxes that display the three
+            # scenarios of the Monte Carlo Analysis
             html.Div([
                 html.H3('Monte Carlo Simulation'),
             ], style={'width': '100%', 'display': 'inline-block', 'align': 'right', 'padding': Styles.graph_padding}),
+            # Bull scenario.
             html.Div([
                 html.H5('Bull Scenario'),
             ], style={'width': '100%', 'display': 'inline-block', 'align': 'right', 'padding': Styles.graph_padding}),
             html.Div([
+                # Display the mean portfolio value of the scenario.
                 Styles.kpiboxes('Mean Portf. Value:', "{:,}".format(mcs('bull')[0]), Styles.lightRed),
+                # Display the standard deviation of the portfolio value.
                 Styles.kpiboxes('Standard Dev.:', "{:,}".format(mcs('bull')[1]), Styles.accblue),
+                # Display the maximum portfolio value of the scenario.
                 Styles.kpiboxes('Max Portf. Value:', "{:,}".format(mcs('bull')[2]), Styles.accblue),
+                # Show the minimum portfolio value of the scenario.
                 Styles.kpiboxes('Min Portf. Value:', "{:,}".format(mcs('bull')[3]), Styles.accblue),
             ]),
+            # Bear scenario.
             html.Div([
                 html.H5('Bear Scenario'),
             ], style={'width': '100%', 'display': 'inline-block', 'align': 'right', 'padding': Styles.graph_padding}),
@@ -324,6 +361,7 @@ def render_page_content(pathname):
                 Styles.kpiboxes('Max Portf. Value:', "{:,}".format(mcs('bear')[2]), Styles.accblue),
                 Styles.kpiboxes('Min Portf. Value:', "{:,}".format(mcs('bear')[3]), Styles.accblue),
             ]),
+            # Neutral scenario.
             html.Div([
                 html.H5('Neutral Scenario'),
             ], style={'width': '100%', 'display': 'inline-block', 'align': 'right', 'padding': Styles.graph_padding}),
@@ -336,6 +374,8 @@ def render_page_content(pathname):
             html.Hr(),
         ])
 
+    # This function returns what tab was selected. In total there are three tabs selectable on the
+    # input form section.
     elif pathname == "/input-form":
         return html.Div(children=[
             dcc.Tabs(id='tabs-example', value='tab-1', children=[
@@ -348,9 +388,11 @@ def render_page_content(pathname):
         ])
 
 
+# This callback controls the output of the tab selection and returns the actual content.
 @app.callback(Output('tabs-example-content', 'children'),
               Input('tabs-example', 'value'))
 def render_content(tab):
+    # The first tab is the questionnaire.
     if tab == 'tab-1':
         return html.Div([
             html.Div([
@@ -359,6 +401,7 @@ def render_content(tab):
                 html.H5('1. Knowledge about financial markets:'),
                 html.Div(['How often do you inform yourself about the happenings in the financial markets?']),
                 html.Div([
+                    # dcc.Dropdown is the dropdown element that shows the available answers.
                     dcc.Dropdown(id='Q_1',
                                  options=[{'label': i, 'value': i} for i in ['never',
                                                                              'seldom',
@@ -481,11 +524,13 @@ def render_content(tab):
             ], style={'textAlign': 'center'})
         ])
     elif tab == 'tab-2':
+        # the second tab is the asset constraint section.
         return html.Div([
             html.Div([
                 html.H2('Please select the portfolio constraints.'),
                 html.Hr(),
             ], style={'textAlign': 'center'}),
+            # Disclaimer to the asset selection and deselection.
             html.Div([
                 html.Div([
                     html.H5('Tick the assets that should be included in the client\'s portfolio.'),
@@ -501,6 +546,7 @@ def render_content(tab):
                 ], style={'textAlign': 'center'}),
                 html.Div([
                     html.Div([
+                        # The dcc.Checklist element creates a table with tick-able buttons.
                         dcc.Checklist(
                             id="checklist",
                             options=[
@@ -530,6 +576,11 @@ def render_content(tab):
                                   'font-size': '24px'}),
             ]),
             html.Hr(),
+            ###########################################################################################################
+
+            # --> This section contained the input elements for the minimum and maximum asset weight selection, a
+            # feature that was removed. Explaination as to why is in the paper.
+
             # html.Div([
             #     html.H5('Assign minimum and maximum values to each asset class.')
             # ], style={'textAlign': 'center'}),
@@ -672,9 +723,14 @@ def render_content(tab):
             #     html.Div([], style={'width': f'{5}%', 'display': 'inline-block'}),
             #     html.Hr()
             # ])
+            ###########################################################################################################
         ])
 
     elif tab == 'tab-3':
+        # The third tab contains the final check page, on which the user can check whether the information selected was
+        # as desired. Afterwards the user can click on a button called "Results" and be navigated to the result
+        # dashboard on which the constructed portfolio is depicted as well as a backtesting visualization, asset weights
+        # and the result of the Monte Carlo Simulation.
         return html.Div([
             html.H1('Summary of your selection'),
             html.H5('A portfolio will be created according to the following selection:'),
@@ -758,6 +814,10 @@ def render_content(tab):
                 )
             ], style={"width": "30%", 'margin-left': '34.5%'}),
             html.Hr(),
+            ##########################################################################################################
+
+            # --> This section would have contained the selection of the minimum and maximum asset constraints.
+
             # html.H3("The following minimum values for each asset class have been selected:"),
             # html.Br(),
             # html.Div([
@@ -812,8 +872,11 @@ def render_content(tab):
             #
             #     )
             # ], style={"width": "30%", 'align': 'center', 'margin-left': '34.5%'}),
+            ##########################################################################################################
+
             html.Br(),
             html.Div([
+                # This is the button that navigates the user to the results page once pressed.
                 dbc.Nav(
                     [
                         dbc.NavLink("Results", href="/results", active="exact"),
@@ -831,4 +894,7 @@ def render_content(tab):
 
 
 if __name__ == "__main__":
-    app.run_server(port=8888, debug=True)
+    # If pages are not loading or there may seem to be unwanted behaviour of the application, you may change
+    # debug=False to debug=True. This enables the developer tool, which allows to see the error messages if there are
+    # any.
+    app.run_server(port=8888, debug=False)
