@@ -4,53 +4,77 @@ import Risk_Scoring
 import numpy as np
 
 
+# This function populates the database with the answers to the respective questions of the questionnaire as well as
+# Inserts the risk scores of the Risk Scoring into another table.
 def SQL_Populator_Questionnaire(input_list):
+    # Firstly, connect to the database file and create a cursor to be able to execute queries.
     connection = sqlite3.connect('Database.db')
     c = connection.cursor()
+    # Create a table called 'questionnaire'. If this table already exists, the try and except statement will return a
+    # pass and just continue with the next operation.
     try:
         c.execute("""CREATE TABLE questionnaire (
                     VariableName text,
                     Value real
                     )""")
-    except: pass
-
+    except:
+        pass
+    # Whenever this function is called to populate the respective answer to a question to the database, we want to
+    # remove the previous answers from the table. The try and except clause allows the function to continue in case
+    # there are no previous answers.
+    # We have used DELETE and INSERT actions instead of UPDATE actions because if there is no previous value, the
+    # UPDATE statement would return an error.
     for i in range(len(input_list)):
         try:
+            # Delete previous answers.
             c.execute(f"DELETE FROM questionnaire WHERE VariableName='Question_{i}'")
             connection.commit()
-        except: pass
+        except:
+            pass
         try:
+            # Insert the new answers.
             c.execute("INSERT INTO questionnaire VALUES (:VariableName,:Value)",
                       {'VariableName': f'Question_{i}', 'Value': input_list[i]})
             connection.commit()
-        except: pass
+        except:
+            pass
 
+    # Same routine as in the action with the questionnaire table: Create a table and if it already exists the try and
+    # except clause will just move on to the next operation.
     try:
         c.execute("""CREATE TABLE risk_scores (
                     VariableName text,
                     Value real
                     )""")
-    except: pass
+    except:
+        pass
 
+    # This is perhaps not very clean code, but it works.
+    # For both, risk willingness score and the risk capacity score, delete the previous values and populate them
+    # with the new scores created in the module Risk Scoring.
     try:
         c.execute(f"DELETE FROM risk_scores WHERE VariableName='risk_willingness_score'")
         connection.commit()
-    except: pass
+    except:
+        pass
     try:
         c.execute("INSERT INTO risk_scores VALUES (:VariableName,:Value)",
                   {'VariableName': 'risk_willingness_score', 'Value': Risk_Scoring.risk_willingness_scoring()[0]})
         connection.commit()
-    except: pass
+    except:
+        pass
 
     try:
         c.execute(f"DELETE FROM risk_scores WHERE VariableName='risk_capacity_score'")
         connection.commit()
-    except: pass
+    except:
+        pass
     try:
         c.execute("INSERT INTO risk_scores VALUES (:VariableName,:Value)",
                   {'VariableName': 'risk_capacity_score', 'Value': Risk_Scoring.risk_capacity_scoring()[0]})
         connection.commit()
-    except: pass
+    except:
+        pass
     connection.commit()
     connection.close()
 
@@ -60,35 +84,24 @@ def SQL_Populator_Constraints_Assets(value_list):
     c = connection.cursor()
     try:
         c.execute("""DROP TABLE asset_constraints""")
-    except: pass
+    except:
+        pass
     try:
         c.execute("""CREATE TABLE asset_constraints (
                     VariableName text,
                     Value real
                     )""")
-    except: pass
+    except:
+        pass
     for i in range(len(value_list)):
         try:
             c.execute("INSERT INTO asset_constraints VALUES (:VariableName,:Value)",
                       {'VariableName': f'Asset_{i}', 'Value': value_list[i]})
             connection.commit()
-        except: pass
+        except:
+            pass
     connection.commit()
     connection.close()
-
-
-def questionnaire_answers(question):
-    c = sqlite3.connect('Database.db')
-    cur = c.cursor()
-
-    # Select the Question that is specified as an argument when calling this function and return the answer of the
-    # respective question.
-    cur.execute(f"SELECT Value FROM questionnaire WHERE VariableName='{question}'")
-    one = cur.fetchone()
-    try:
-        return one[0]
-    except:
-        return "None"
 
 
 def selected_assets():
@@ -105,7 +118,8 @@ def selected_assets():
             cur.execute(f"SELECT Value FROM asset_constraints WHERE VariableName='Asset_{i}'")
             one = cur.fetchone()
             selected_list.append(one[0])
-        except: pass
+        except:
+            pass
     in_list = []
 
     # Loop generates a true or false value if the possible asset is within the list of all asset. If the asset is
@@ -125,8 +139,11 @@ def selected_assets():
     data_table = pd.DataFrame(data)
     return data_table, in_list
 
+#######################################################################################################################
+
 # --> These two functions were used in order to populate and retrieve the minimum values that a user could select
 # under the asset constraints but since we decided to not include that feature the below function is commented out.
+
 
 # def selected_assets_minimums():
 #     selected_list = []
@@ -169,6 +186,8 @@ def selected_assets():
 #         except: pass
 #     connection.commit()
 #     connection.close()
+
+#######################################################################################################################
 
 
 def selected_portfolio_weights():
@@ -329,9 +348,15 @@ def forward_looking_expected_return(scenario):
     return forward_looking_return
 
 
+# This function is designed to retrieve the answer of a question.
+# The function is called with the argument 'question' and collects the respective answer to the defined question from
+# the database.
 def Answer(question):
     connection = sqlite3.connect('Database.db')
     c = connection.cursor()
     c.execute(f"SELECT Value FROM questionnaire WHERE VariableName='{question}'")
     one = c.fetchone()
-    return one[0]
+    try:
+        return one[0]
+    except:
+        return "No Answer"

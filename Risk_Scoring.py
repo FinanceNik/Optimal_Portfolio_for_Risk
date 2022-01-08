@@ -93,7 +93,6 @@ def risk_willingness_scoring():
         return "none", 0
 
 
-##########################################################################
 def risk_capacity_scoring():
     try:
         def liquidity():

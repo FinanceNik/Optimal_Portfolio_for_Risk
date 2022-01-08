@@ -666,49 +666,49 @@ def render_content(tab):
             html.Br(),
             html.Div([
                 html.H6("Question 1 - How often do you inform yourself about the happenings in the financial markets?"),
-                html.Div(f"{dh.questionnaire_answers('Question_0')}")
+                html.Div(f"{dh.Answer('Question_0')}")
             ]),
             html.Br(),
             html.Div([
                 html.H6("Question 2 - For how many years are you investing in financial instruments of any kind?"),
-                html.Div(f"{dh.questionnaire_answers('Question_1')}")
+                html.Div(f"{dh.Answer('Question_1')}")
             ]),
             html.Br(),
             html.Div([
                 html.H6("Question 3 - Which of the following portfolio returns seem most interesting to you?   "
                         "[-2 to +2%  |  -5 to +5%  |  -10 to +10%  |  -15 to +15%  |  -20 to +20%]"),
-                html.Div(f"{dh.questionnaire_answers('Question_2')}")
+                html.Div(f"{dh.Answer('Question_2')}")
             ]),
             html.Br(),
             html.Div([
                 html.H6("Question 4 - What would you do if your portfolio suddenly lost 15% in value?"),
-                html.Div(f"{dh.questionnaire_answers('Question_3')}")
+                html.Div(f"{dh.Answer('Question_3')}")
             ]),
             html.Br(),
             html.Div([
                 html.H6("Question 5 - What statement is most closely resembling you investment philosophy?"),
-                html.Div(f"{dh.questionnaire_answers('Question_4')}")
+                html.Div(f"{dh.Answer('Question_4')}")
             ]),
             html.Br(),
             html.Div([
                 html.H6("Question 6 - How large is the portion of your cash equivalent assets to your total net worth?"),
-                html.Div(f"{dh.questionnaire_answers('Question_5')}")
+                html.Div(f"{dh.Answer('Question_5')}")
             ]),
             html.Br(),
             html.Div([
                 html.H6("Question 7 - When would you probably like to access the invested capital?"),
-                html.Div(f"{dh.questionnaire_answers('Question_6')}")
+                html.Div(f"{dh.Answer('Question_6')}")
             ]),
             html.Br(),
             html.Div([
                 html.H6("Question 8 - What statement best reflects your cost & income situation?"),
-                html.Div(f"{dh.questionnaire_answers('Question_7')}")
+                html.Div(f"{dh.Answer('Question_7')}")
             ]),
             html.Br(),
             html.Div([
                 html.H6("Question 9 - For how many years would the cash portion of your total net worth "
                         "cover your living expenses if you had no other income?"),
-                html.Div(f"{dh.questionnaire_answers('Question_8')}")
+                html.Div(f"{dh.Answer('Question_8')}")
             ]),
             html.Hr(),
             html.H3("The following asset classes have been selected:"),
