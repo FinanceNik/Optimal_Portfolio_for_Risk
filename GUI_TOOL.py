@@ -12,8 +12,11 @@ import Risk_Scoring
 from Monte_Carlo_Simulation import monte_carlo_simulation as mcs
 warnings.simplefilter("ignore", UserWarning)
 
+# The dash.Dash class is the framework for the whole app.
 app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
+# Defining the sidebar and all the elements within. That includes links (dbc.Nav - elements, which are navigation
+# elements), headings for the different sections and the title of the application "Portfolio Optimizer".
 sidebar = html.Div(
     [
         html.H1("Portfolio\nOptimizer", style={'font-size': '46px', 'font-weight': 'bold'}),
@@ -30,17 +33,25 @@ sidebar = html.Div(
             pills=True,
         ),
     ],
+    # The style of the sidebar is imported from the STYLES module.
     style=Styles.SIDEBAR_STYLE,
 )
 
-
+# How the content within the web-application is supposed to be styled. Also imported from the STYLES module.
 content = html.Div(id="page-content", style=Styles.CONTENT_STYLE)
 
+# The complete layout of the app. Meaning that the application is supposed to contain the sidebar element, the content
+# element and the background color is defined.
 app.layout = html.Div([
     html.Div([dcc.Location(id="url"), sidebar, content], style={'backgroundColor': 'white'}),
     html.Div([dcc.ConfirmDialog(id='confirm-dialog', message="data submitted!")])
 ])
 
+#######################################################################################################################
+
+# The following two callbacks were to be used for the asset constraint section. Here the user could have selected a
+# minimum and a maximum asset allocation for an asset class. However, due to some limitations of the Markowitz
+# Algorithm, we had to withdraw these features.
 
 # @app.callback(
 #     Output("output-maximum", "value"),
@@ -75,12 +86,18 @@ app.layout = html.Div([
 #     if n_clicks > 0:
 #         dh.SQL_Populator_Constraints_Minimums(value_list)
 
+######################################################################################################################
 
+
+# This is the callback element that saves the information of which assets are selected under the asset constraint
+# section in the input form and writes that data to the database file.
 @app.callback(
     Output("checklist-output", "value"),
     Input("submit-assets", "n_clicks"),
     Input("checklist", "value"))
 def update_checklist(n_clicks, value_list):
+    # In order to just trigger the function once the button is clicked, it is defined that the database population
+    # function is only triggered once the button is clicked at least once.
     if n_clicks > 0:
         dh.SQL_Populator_Constraints_Assets(value_list)
 

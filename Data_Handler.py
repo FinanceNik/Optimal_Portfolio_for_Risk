@@ -139,56 +139,6 @@ def selected_assets():
     data_table = pd.DataFrame(data)
     return data_table, in_list
 
-#######################################################################################################################
-
-# --> These two functions were used in order to populate and retrieve the minimum values that a user could select
-# under the asset constraints but since we decided to not include that feature the below function is commented out.
-
-
-# def selected_assets_minimums():
-#     selected_list = []
-#     c = sqlite3.connect('Database.db')
-#     cur = c.cursor()
-#     for i in range(8):
-#         try:
-#             cur.execute(f"SELECT Value FROM asset_minimums WHERE VariableName='Asset_{i}'")
-#             one = cur.fetchone()
-#             selected_list.append(one[0])
-#         except:
-#             selected_list.append("")
-#     full_asset_name_list = [
-#         "min. Cash", "min. Bonds", "min. Bonds FC (hedged)", "min. Swiss Equity",
-#         "min. Global Equity", "min. Global Equity Small Cap", "min. Emerging Markets Equity", "min. Real Estate"
-#     ]
-#     data = {"Asset Class": full_asset_name_list,
-#             "Selected": selected_list}
-#     data_table = pd.DataFrame(data)
-#     return data_table, selected_list
-
-
-# def SQL_Populator_Constraints_Minimums(value_list):
-#     connection = sqlite3.connect('Database.db')
-#     c = connection.cursor()
-#     try:
-#         c.execute("""DROP TABLE asset_minimums""")
-#     except: pass
-#     try:
-#         c.execute("""CREATE TABLE asset_minimums (
-#                     VariableName text,
-#                     Value real
-#                     )""")
-#     except: pass
-#     for i in range(len(value_list)):
-#         try:
-#             c.execute("INSERT INTO asset_minimums VALUES (:VariableName,:Value)",
-#                       {'VariableName': f'Asset_{i}', 'Value': value_list[i]})
-#             connection.commit()
-#         except: pass
-#     connection.commit()
-#     connection.close()
-
-#######################################################################################################################
-
 
 def selected_portfolio_weights():
     selected_list = []
@@ -360,3 +310,54 @@ def Answer(question):
         return one[0]
     except:
         return "No Answer"
+
+
+#######################################################################################################################
+
+# --> These two functions were used in order to populate and retrieve the minimum values that a user could select
+# under the asset constraints but since we decided to not include that feature the below function is commented out.
+
+
+# def selected_assets_minimums():
+#     selected_list = []
+#     c = sqlite3.connect('Database.db')
+#     cur = c.cursor()
+#     for i in range(8):
+#         try:
+#             cur.execute(f"SELECT Value FROM asset_minimums WHERE VariableName='Asset_{i}'")
+#             one = cur.fetchone()
+#             selected_list.append(one[0])
+#         except:
+#             selected_list.append("")
+#     full_asset_name_list = [
+#         "min. Cash", "min. Bonds", "min. Bonds FC (hedged)", "min. Swiss Equity",
+#         "min. Global Equity", "min. Global Equity Small Cap", "min. Emerging Markets Equity", "min. Real Estate"
+#     ]
+#     data = {"Asset Class": full_asset_name_list,
+#             "Selected": selected_list}
+#     data_table = pd.DataFrame(data)
+#     return data_table, selected_list
+
+
+# def SQL_Populator_Constraints_Minimums(value_list):
+#     connection = sqlite3.connect('Database.db')
+#     c = connection.cursor()
+#     try:
+#         c.execute("""DROP TABLE asset_minimums""")
+#     except: pass
+#     try:
+#         c.execute("""CREATE TABLE asset_minimums (
+#                     VariableName text,
+#                     Value real
+#                     )""")
+#     except: pass
+#     for i in range(len(value_list)):
+#         try:
+#             c.execute("INSERT INTO asset_minimums VALUES (:VariableName,:Value)",
+#                       {'VariableName': f'Asset_{i}', 'Value': value_list[i]})
+#             connection.commit()
+#         except: pass
+#     connection.commit()
+#     connection.close()
+
+#######################################################################################################################

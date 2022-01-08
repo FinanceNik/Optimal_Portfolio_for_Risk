@@ -43,6 +43,7 @@ def optimal_portfolio():
 
     cov_matrix = covariance_matrix()
     ind_er = []
+    # Starting the columns from the second instance (df[1:]) as in the first instance is just the date.
     for i in df_raw.columns[1:]:
         ind_er.append((df_raw[i].pct_change().mean())*12)
     ind_er = pd.Series([x for x in ind_er], index=df_raw.columns[1:])
@@ -52,7 +53,7 @@ def optimal_portfolio():
     p_weights = []
 
     num_assets = len(df_raw.columns[1:])
-    num_portfolios = 5000  # <-- How often is the algorithm supposed to create randomized portfolios to get the most eff.
+    num_portfolios = 10_000  # <-- How often is the algorithm supposed to create randomized portfolios to get the most eff.
 
     def constraint_matrix():
 
@@ -106,7 +107,7 @@ def optimal_portfolio():
         '5': [100, 100, 100, 100, 100, 100, 1, 100],
         '6': [1, 100, 100, 100, 100, 100, 1, 100],
         '7': [1, 100, 1, 100, 100, 100, 1, 100],
-        '8': [1, 1, 1, 100, 100, 100, 1, 100],
+        '8': [1, 1, 100, 100, 100, 100, 100, 100],
         '9': [1, 1, 1, 100, 100, 100, 100, 100],
         '10': [1, 1, 1, 100, 100, 100, 100, 1],
     }
