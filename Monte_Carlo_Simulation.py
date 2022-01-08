@@ -27,8 +27,12 @@ def monte_carlo_simulation(scenario):
 
         lst = []
 
+        # Create a loop that goes over this process 50 times.
         for year in range(duration):
+            # np.random.normal creates normally distributed random values based in the two inputs expected return
+            # and volatility.
             market_return = np.random.normal(expected_return, volatility)
+            # Base the current value on the last value to create a statistical random walk with drift.
             final_value = (1 + market_return) * investment
             investment = final_value
             lst.append(final_value)

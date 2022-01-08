@@ -1,6 +1,7 @@
 import Data_Handler as dh
 
 
+# Calculate the score for the risk willingness of an investor
 def risk_willingness_scoring():
     try:
         def knowledge_FM():
@@ -93,6 +94,7 @@ def risk_willingness_scoring():
         return "none", 0
 
 
+# Calculate the score for the risk capacity of an investor
 def risk_capacity_scoring():
     try:
         def liquidity():
