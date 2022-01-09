@@ -159,6 +159,21 @@ def render_page_content(pathname):
                       'box-shadow': '5px 4px 5px 5px lightgrey', "font-size": "30px", "textAlign": "center",
                       'borderRadius': '10px',
                       'overflow': 'hidden'}),
+            html.Div([
+                html.Hr(),
+                html.Div(['Minor instructions when using this application:'], style={'fontWeight': 'bold'}),
+                html.Br(),
+                html.Div(['1. It is not required, but beneficial to run the application in a 16:9 window, as '
+                          'otherwise']),
+                html.Div(['Some margins may be off.']),
+                html.Br(),
+                html.Div(['2. When in the Input Form section. Please press every button to the bottom on the '
+                          'respective']),
+                html.Div(['pages. They trigger the functions that are saving the data to the database.']),
+                html.Br(),
+                html.Div(['3. After submitting the information when pressing the buttons on the respective pages, you']),
+                html.Div(['may click the next tab to the bottom of the Input Form page.']),
+            ], style={"font-size": "20px", "textAlign": "center"}),
 
         ])
     # This function contains the elements for the About page such as pictures and text bodies.
