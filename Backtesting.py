@@ -81,7 +81,7 @@ def dataframe_population():
     # and then loop in -1 steps from there. The first row used with data (last row in the DataFrame) is 177.
     markowitz_weights_line = 177
     # loop the whole dataset in 6er steps as after every 6 instances, the weights are already populated (Jan + Jul)
-    for line in range(177, 2, -6):
+    for line in range(markowitz_weights_line, 2, -6):
         try:
             for i in range(line-1, line-6, -1):
                 for asset in asset_list:
