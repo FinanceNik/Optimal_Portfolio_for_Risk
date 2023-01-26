@@ -1,4 +1,3 @@
-import warnings
 import dash
 import dash_bootstrap_components as dbc
 from dash import dcc
@@ -10,7 +9,6 @@ import Data_Handler as dh
 import Portfolio_Creation as pc
 import Risk_Scoring
 from Monte_Carlo_Simulation import monte_carlo_simulation as mcs
-warnings.simplefilter("ignore", UserWarning)
 
 # The dash.Dash class is the framework for the whole app.
 app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -48,47 +46,6 @@ app.layout = html.Div([
     html.Div([dcc.Location(id="url"), sidebar, content], style={'backgroundColor': 'white'}),
     html.Div([dcc.ConfirmDialog(id='confirm-dialog', message="data submitted!")])
 ])
-
-#######################################################################################################################
-
-# The following two callbacks were to be used for the asset constraint section. Here the user could have selected a
-# minimum and a maximum asset allocation for an asset class. However, due to some limitations of the Markowitz
-# Algorithm, we had to withdraw these features.
-
-# @app.callback(
-#     Output("output-maximum", "value"),
-#     Input("submit-maximum", "n_clicks"),
-#     Input("Input-max-1", "value"),
-#     Input("Input-max-2", "value"),
-#     Input("Input-max-3", "value"),
-#     Input("Input-max-4", "value"),
-#     Input("Input-max-5", "value"),
-#     Input("Input-max-6", "value"),
-#     Input("Input-max-7", "value"),
-#     Input("Input-max-8", "value"))
-# def output_maximum(n_clicks, value1, value2, value3, value4, value5, value6, value7, value8):
-#     value_list = [value1, value2, value3, value4, value5, value6, value7, value8]
-#     if n_clicks > 0:
-#         print("clicked")
-#
-#
-# @app.callback(
-#     Output("output-minimum", "value"),
-#     Input("submit-minimum", "n_clicks"),
-#     Input("Input-1", "value"),
-#     Input("Input-2", "value"),
-#     Input("Input-3", "value"),
-#     Input("Input-4", "value"),
-#     Input("Input-5", "value"),
-#     Input("Input-6", "value"),
-#     Input("Input-7", "value"),
-#     Input("Input-8", "value"))
-# def output_minimum(n_clicks, value1, value2, value3, value4, value5, value6, value7, value8):
-#     value_list = [value1, value2, value3, value4, value5, value6, value7, value8]
-#     if n_clicks > 0:
-#         dh.SQL_Populator_Constraints_Minimums(value_list)
-
-######################################################################################################################
 
 
 # This is the callback element that saves the information of which assets are selected under the asset constraint
@@ -285,7 +242,7 @@ def render_page_content(pathname):
                 # Display the historical volatility of the chosen, optimal portfolio.
                 Styles.kpiboxes('Expected Volatiliy Histor.:',
                                 f"{round(pc.optimal_portfolio()[1] * 100, 4)}%", Styles.accblue),
-                # Show the forward looking expected return that is calculated as a sumproduct of the asset allocations
+                # Show the forward-looking expected return that is calculated as a sumproduct of the asset allocations
                 # and the expected returns of each asset class under the neutral scenario described in the paper.
                 Styles.kpiboxes('Expected Return Forward:',
                                 f"{round(dh.forward_looking_expected_return('neutral')*100, 4)}%", Styles.accblue),

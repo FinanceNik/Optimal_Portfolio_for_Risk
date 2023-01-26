@@ -1,11 +1,6 @@
 import sqlite3
 import Portfolio_Creation as pc
 import Data_Handler as dh
-import warnings
-from pandas.core.common import SettingWithCopyWarning
-# This warning is suppressed as otherwise it is triggered by the insertion of the backtesting values into the DataFrame.
-# This does not have any performance implications, but it helps to keep the terminal clean.
-warnings.simplefilter(action="ignore", category=SettingWithCopyWarning)
 
 # --> A list of all the eight asset classes and their abbreviations used in the data.csv file
 asset_list = ["CA", "BO", "BOFC", "SE", "GE", "GES", "EME", "RE"]
@@ -54,7 +49,7 @@ def dataframe_population_weights():
     data_weights = {"CA": data[0], "BO": data[1], "BOFC": data[2], "SE": data[3],
                     "GE": data[4], "GES": data[5], "EME": data[6], "RE": data[7]}
     # Loop over the whole DataFrame and insert the weights whenever the month is either January or July
-    for i in range(len(df.index)):
+    for i, _ in enumerate(df.index):
         if df['Month'][i] == '1' or df['Month'][i] == '7':
             for asset in asset_list:
                 df[f'{asset}_weight'][i] = data_weights[f"{asset}"]
@@ -93,9 +88,14 @@ def dataframe_population():
                     df[f'{asset}_value'][i] = float(df[f'{asset}_share'][line]) * float(df[f'{asset}'][i])
 
                 # The portfolio value is the sum of the values of each asset class.
-                df['portfolio_value'][i] = float(df['CA_value'][i]) + float(df['BO_value'][i]) + float(df['BOFC_value'][i]) + \
-                                           float(df['SE_value'][i]) + float(df['GE_value'][i]) + float(df['GES_value'][i]) + \
-                                           float(df['EME_value'][i]) + float(df['RE_value'][i])
+                df['portfolio_value'][i] = float(df['CA_value'][i]) + \
+                                           float(df['BO_value'][i]) + \
+                                           float(df['BOFC_value'][i]) + \
+                                           float(df['SE_value'][i]) + \
+                                           float(df['GE_value'][i]) + \
+                                           float(df['GES_value'][i]) + \
+                                           float(df['EME_value'][i]) + \
+                                           float(df['RE_value'][i])
                 # Rounding the portfolio value as more than 2 digits after the comma are unnecessary.
                 df['portfolio_value'][i] = round(df['portfolio_value'][i], 2)
 
@@ -111,7 +111,8 @@ def dataframe_population():
             # From the rebalanced portfolio value we calculate the value of each asset class position
             # This is done by taking the weight of each asset times the portfolio value
             for asset in asset_list:
-                df[f'{asset}_value'][line-6] = float(df[f'{asset}_weight'][markowitz_weights_line]) * portf_rebalancing_value
+                df[f'{asset}_value'][line-6] = float(df[f'{asset}_weight'][markowitz_weights_line]) * \
+                                               portf_rebalancing_value
 
             # Now, calculate the number of shares that can be bought with that amount. For simplification purposes
             # we do purchase the exact number of shares as float, which would translate to fractional shares in the
@@ -120,9 +121,14 @@ def dataframe_population():
                 df[f'{asset}_share'][line-6] = float(df[f'{asset}_value'][171]) / float(df[f'{asset}'][171])
 
             # Calculate the portfolio value.
-            df['portfolio_value'][line-6] = float(df['CA_value'][line-6]) + float(df['BO_value'][line-6]) + float(df['BOFC_value'][line-6]) + \
-                                       float(df['SE_value'][line-6]) + float(df['GE_value'][line-6]) + float(df['GES_value'][line-6]) + \
-                                       float(df['EME_value'][line-6]) + float(df['RE_value'][line-6])
+            df['portfolio_value'][line-6] = float(df['CA_value'][line-6]) + \
+                                            float(df['BO_value'][line-6]) + \
+                                            float(df['BOFC_value'][line-6]) + \
+                                            float(df['SE_value'][line-6]) + \
+                                            float(df['GE_value'][line-6]) + \
+                                            float(df['GES_value'][line-6]) + \
+                                            float(df['EME_value'][line-6]) + \
+                                            float(df['RE_value'][line-6])
             # Round the portfolio value to 2 digits after the comma.
             df['portfolio_value'][line-6] = round(df['portfolio_value'][line-6], 2)
 
@@ -155,7 +161,7 @@ def backtesting_SQL_population():
         pass
 
     # For the whole length of the dataset, populate a backtesting value into the database.
-    for i in range(len(portValue_list)):
+    for i, _ in enumerate(portValue_list):
         try:
             c.execute(f"DELETE FROM backtesting_portfolio_values WHERE VariableName='{i}'")
             connection.commit()

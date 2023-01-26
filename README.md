@@ -1,6 +1,13 @@
-## HSLU MSc B&F - Module 11 - Practical Application
-### Authors: Johannes Heilshorn and Niklas Clasen
-#### Due Date: January 9th 2022
+# Lucerne School of Business (HSLU) MSc B&F  - Build Financial Software
+## Authors: Johannes Heilshorn and Niklas Clasen
+### Due Date: January 9th 2022
+
+## Overview
+This project was part of a third semester course in my banking and finance masters degree. The goal was to develop
+software that solves a real-world problem in the financial sector. 
+
+In particular, this project significantly increases the efficiency for small asset management institutions in evaluating
+their clients appetite as well as 
 
 ---
 **Important instructions before being able to start the application**

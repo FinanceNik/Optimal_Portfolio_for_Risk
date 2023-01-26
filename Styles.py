@@ -1,5 +1,4 @@
-# Wrapper class for html elements provided by Dash.
-from dash import html
+from dash import html  # Wrapper class for html elements provided by Dash.
 # Class for the table element that is used on the result page as well as in the Input Form under Final Check.
 from dash import dash_table
 
