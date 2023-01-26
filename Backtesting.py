@@ -12,7 +12,7 @@ def dataframe_dateRefactoring():
     # In this case, we do, however, need to clean the Date column to be able to split the date into a Month column
     # The for-loop iterates over the whole length of the DataFrame and cleans the Date.
     df.insert(1, 'Month', '')
-    for i in range(len(df.index)):
+    for i, _ in enumerate(df.index):
         # The split function is a Python built-in function to separate string. As our dates are in the format string
         # and deliminated as such 01/31/1999, we split the string on the / -character, which created the list, and
         # lastly we take the first (zeroth) element of the list as that is the desired date.
