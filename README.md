@@ -42,7 +42,7 @@ and run the application:
     - either in an integrated development environment (IDE) like Pycharm, VSCode...
     - or via the terminal
     
-        python3 GUI_TOOL.py
+        python3 GUI.py
         
 3. A terminal output should be displayed with the link on which port the application
    is running, however, typically should be:

@@ -1,4 +1,4 @@
-import Data_Handler as dh
+import DataHandler as dh
 
 
 # Calculate the score for the risk willingness of an investor

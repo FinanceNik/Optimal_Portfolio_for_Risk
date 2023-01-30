@@ -5,10 +5,10 @@ from dash import html
 from dash import dash_table
 from dash.dependencies import Input, Output
 import Styles
-import Data_Handler as dh
-import Portfolio_Creation as pc
+import DataHandler as dh
+import PortfolioCreation as pc
 import Risk_Scoring
-from Monte_Carlo_Simulation import monte_carlo_simulation as mcs
+from MonteCarloSimulation import monte_carlo_simulation as mcs
 
 # The dash.Dash class is the framework for the whole app.
 app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -143,7 +143,7 @@ def render_page_content(pathname):
             html.Div([
                 html.Div([html.Img(src=app.get_asset_url('image.jpg'))], style={'width': f'{17.3}%', 'display': 'inline-block'}),
                 ], style={'width': f'{17.3}%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
-                          'box-shadow': Styles.boxshadow,
+                          'box-shadow': Styles.boxShadow,
                           'borderRadius': '10px',
                           'overflow': 'hidden'}),
             html.Div([], style={'width': f'{1}%', 'display': 'inline-block'}),
@@ -151,7 +151,7 @@ def render_page_content(pathname):
                 html.Div([html.Img(src=app.get_asset_url('image_2.jpg'))],
                          style={'width': f'{17.3}%', 'display': 'inline-block'}),
             ], style={'width': f'{17.3}%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
-                      'box-shadow': Styles.boxshadow,
+                      'box-shadow': Styles.boxShadow,
                       'borderRadius': '10px',
                       'overflow': 'hidden'}),
             html.Div([], style={'width': f'{32}%', 'display': 'inline-block'}),
@@ -240,11 +240,11 @@ def render_page_content(pathname):
                 Styles.kpiboxes('Risk Adversity Score:',
                                 Risk_Scoring.risk_capacity_scoring()[0], Styles.accblue),
                 # Display the historical volatility of the chosen, optimal portfolio.
-                Styles.kpiboxes('Expected Volatiliy Histor.:',
+                Styles.kpiboxes('Expected Volatiliy:',
                                 f"{round(pc.optimal_portfolio()[1] * 100, 4)}%", Styles.accblue),
                 # Show the forward-looking expected return that is calculated as a sumproduct of the asset allocations
                 # and the expected returns of each asset class under the neutral scenario described in the paper.
-                Styles.kpiboxes('Expected Return Forward:',
+                Styles.kpiboxes('Expected Return:',
                                 f"{round(dh.forward_looking_expected_return('neutral')*100, 4)}%", Styles.accblue),
             ]),
             html.Hr(),
@@ -487,7 +487,7 @@ def render_content(tab):
                 ]),
                 html.Hr(),
                 html.Div([
-                    html.Button('Click to Submit', id='submit', n_clicks=0)
+                    html.Button('Click to Submit', className='btn btn-primary', id='submit', n_clicks=0)
                 ], style={'width': '11.4%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
                           'margin-left': '0%',
                           'font-size': '24px',
@@ -536,166 +536,18 @@ def render_content(tab):
                         html.Div(id='checklist-output')])
                     ], style={'width': f'{18}%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
                               'margin-left': '41%',
-                              'box-shadow': Styles.boxshadow,
+                              'box-shadow': Styles.boxShadow,
                               'borderRadius': '10px',
                               'font-size': '20px',
                               'overflow': 'hidden'}),
                 html.Div([
-                    html.Button('Submit Asset Selection', id='submit-assets', n_clicks=0)
+                    html.Button('Submit Asset Selection', className='btn btn-primary', id='submit-assets', n_clicks=0)
                         ], style={'width': f'{20}%', 'display': 'inline-block',
                                   'margin-left': '41%',
                                   'align': 'center', 'padding': '10px',
                                   'font-size': '24px'}),
             ]),
             html.Hr(),
-            ###########################################################################################################
-
-            # --> This section contained the input elements for the minimum and maximum asset weight selection, a
-            # feature that was removed. Explaination as to why is in the paper.
-
-            # html.Div([
-            #     html.H5('Assign minimum and maximum values to each asset class.')
-            # ], style={'textAlign': 'center'}),
-            # html.Div([
-            #     html.I('Please only insert value if asset shall have a minimum otherwise leave blank!')
-            # ], style={'textAlign': 'center'}),
-            # html.Div([
-            #     html.I('Insert value as full number (if constraint shall be 20%, insert 20)!')
-            # ], style={'textAlign': 'center'}),
-            # html.Br(),
-            # html.Div([
-            #     html.Div([], style={'width': f'{12}%', 'display': 'inline-block'}),
-            #     html.Div([
-            #         html.Div([
-            #             html.H6('Minimums:')
-            #         ], style={'textAlign': 'center'}),
-            #         html.Br(),
-            #         html.Div([
-            #             html.Div([
-            #                 dcc.Input(
-            #                     id="Input-1",
-            #                     type="text",
-            #                     placeholder="min. Cash"),
-            #             ], style={"width": "100%"}),
-            #             html.Div([
-            #                 dcc.Input(
-            #                     id="Input-2",
-            #                     type="text",
-            #                     placeholder="min. Bonds"),
-            #             ], style={"width": "100%"}),
-            #             html.Div([
-            #                 dcc.Input(
-            #                     id="Input-3",
-            #                     type="text",
-            #                     placeholder="min. Bonds FC (hedged)"),
-            #             ], style={"width": "100%"}),
-            #             html.Div([
-            #                 dcc.Input(
-            #                     id="Input-4",
-            #                     type="text",
-            #                     placeholder="min. Swiss Equity"),
-            #             ], style={"width": "100%"}),
-            #             html.Div([
-            #                 dcc.Input(
-            #                     id="Input-5",
-            #                     type="text",
-            #                     placeholder="min. Global Equity"),
-            #             ], style={"width": "100%"}),
-            #             html.Div([
-            #                 dcc.Input(
-            #                     id="Input-6",
-            #                     type="text",
-            #                     placeholder="min. Global Equity Small Cap"),
-            #             ], style={"width": "100%"}),
-            #             html.Div([
-            #                 dcc.Input(
-            #                     id="Input-7",
-            #                     type="text",
-            #                     placeholder="min. Emerging Markets Equity"),
-            #             ], style={"width": "100%"}),
-            #             html.Div([
-            #                 dcc.Input(
-            #                     id="Input-8",
-            #                     type="text",
-            #                     placeholder="min. Real Estate"),
-            #             ], style={"width": "100%"}),
-            #             html.Div(id="output-minimum")
-            #         ], style={'margin-left': '27%'}),
-            #         html.Div([
-            #             html.Button('Submit Minimum Selection', id='submit-minimum', n_clicks=0)
-            #         ], style={'width': f'{100}%', 'display': 'inline-block',
-            #                   'align': 'center', 'padding': '10px',
-            #                   'textAlign': 'center',
-            #                   'font-size': '24px'}),
-            #     ], style=Styles.STYLE(35)),
-            #     html.Div([], style={'width': f'{5}%', 'display': 'inline-block'}),
-            #     html.Div([
-            #         html.Div([
-            #             html.H6('Maximums:')
-            #         ], style={'textAlign': 'center'}),
-            #         html.Br(),
-            #         html.Div([
-            #             html.Div([
-            #                 dcc.Input(
-            #                     id="Input-max-1",
-            #                     type="text",
-            #                     placeholder="max. Cash"),
-            #             ], style={"width": "100%"}),
-            #             html.Div([
-            #                 dcc.Input(
-            #                     id="Input-max-2",
-            #                     type="text",
-            #                     placeholder="max. Bonds"),
-            #             ], style={"width": "100%"}),
-            #             html.Div([
-            #                 dcc.Input(
-            #                     id="Input-max-3",
-            #                     type="text",
-            #                     placeholder="max. Bonds FC (hedged)"),
-            #             ], style={"width": "100%"}),
-            #             html.Div([
-            #                 dcc.Input(
-            #                     id="Input-max-4",
-            #                     type="text",
-            #                     placeholder="max. Swiss Equity"),
-            #             ], style={"width": "100%"}),
-            #             html.Div([
-            #                 dcc.Input(
-            #                     id="Input-max-5",
-            #                     type="text",
-            #                     placeholder="max. Global Equity"),
-            #             ], style={"width": "100%"}),
-            #             html.Div([
-            #                 dcc.Input(
-            #                     id="Input-max-6",
-            #                     type="text",
-            #                     placeholder="max. Global Equity Small Cap"),
-            #             ], style={"width": "100%"}),
-            #             html.Div([
-            #                 dcc.Input(
-            #                     id="Input-max-7",
-            #                     type="text",
-            #                     placeholder="max. Emerging Markets Equity"),
-            #             ], style={"width": "100%"}),
-            #             html.Div([
-            #                 dcc.Input(
-            #                     id="Input-max-8",
-            #                     type="text",
-            #                     placeholder="max. Real Estate"),
-            #             ], style={"width": "100%"}),
-            #             html.Div(id="output-maximum")
-            #         ], style={'margin-left': '27%'}),
-            #         html.Div([
-            #             html.Button('Submit Maximum Selection', id='submit-maximum', n_clicks=0)
-            #         ], style={'width': f'{100}%', 'display': 'inline-block',
-            #                   'align': 'center', 'padding': '10px',
-            #                   'textAlign': 'center',
-            #                   'font-size': '24px'}),
-            #     ], style=Styles.STYLE(35)),
-            #     html.Div([], style={'width': f'{5}%', 'display': 'inline-block'}),
-            #     html.Hr()
-            # ])
-            ###########################################################################################################
         ])
 
     elif tab == 'tab-3':
@@ -786,66 +638,6 @@ def render_content(tab):
                 )
             ], style={"width": "30%", 'margin-left': '34.5%'}),
             html.Hr(),
-            ##########################################################################################################
-
-            # --> This section would have contained the selection of the minimum and maximum asset constraints.
-
-            # html.H3("The following minimum values for each asset class have been selected:"),
-            # html.Br(),
-            # html.Div([
-            #     dash_table.DataTable(
-            #         id='stat_table',
-            #         columns=[{'name': i, 'id': i} for i in dh.selected_assets_minimums()[0].columns],
-            #         style_cell_conditional=[],
-            #         style_as_list_view=False,
-            #         style_cell={'padding': '5px', 'border-radius': '50px'},
-            #         style_header={'backgroundColor': Styles.blues1, 'fontWeight': 'bold', 'color': 'white',
-            #                       'border': '1px solid grey', 'height': '50px', 'font-size': '16px'},
-            #         style_data_conditional=[{'if': {'row_index': 'odd'}, 'backgroundColor': '#DDEBF7'},
-            #                                 {'if': {'row_index': 'even'}, 'backgroundColor': '#F2F2F2'},
-            #                                 {'if': {'filter_query': '{Selected} > 0',
-            #                                         'column_id': 'Selected'},
-            #                                  'backgroundColor': Styles.lightRed, 'color': 'black'},
-            #                                 ],
-            #         style_table={'border': '1px solid lightgrey',
-            #                      'borderRadius': '10px',
-            #                      'overflow': 'hidden',
-            #                      'box-shadow': '5px 4px 5px 5px lightgrey'},
-            #         style_data={'border': '1px solid grey', 'font-size': '12px'},
-            #         data=dh.selected_assets_minimums()[0].to_dict('records'),
-            #
-            #     )
-            # ], style={"width": "30%", 'align': 'center', 'margin-left': '34.5%'}),
-            # html.Br(),
-            # html.Hr(),
-            # html.H3("The following maximum values for each asset class have been selected:"),
-            # html.Br(),
-            # html.Div([
-            #     dash_table.DataTable(
-            #         id='stat_table',
-            #         columns=[{'name': i, 'id': i} for i in dh.selected_assets_minimums()[0].columns],
-            #         style_cell_conditional=[],
-            #         style_as_list_view=False,
-            #         style_cell={'padding': '5px', 'border-radius': '50px'},
-            #         style_header={'backgroundColor': Styles.blues1, 'fontWeight': 'bold', 'color': 'white',
-            #                       'border': '1px solid grey', 'height': '50px', 'font-size': '16px'},
-            #         style_data_conditional=[{'if': {'row_index': 'odd'}, 'backgroundColor': '#DDEBF7'},
-            #                                 {'if': {'row_index': 'even'}, 'backgroundColor': '#F2F2F2'},
-            #                                 {'if': {'filter_query': '{Selected} > 0',
-            #                                         'column_id': 'Selected'},
-            #                                  'backgroundColor': Styles.lightRed, 'color': 'black'},
-            #                                 ],
-            #         style_table={'border': '1px solid lightgrey',
-            #                      'borderRadius': '10px',
-            #                      'overflow': 'hidden',
-            #                      'box-shadow': '5px 4px 5px 5px lightgrey'},
-            #         style_data={'border': '1px solid grey', 'font-size': '12px'},
-            #         data=dh.selected_assets_minimums()[0].to_dict('records'),
-            #
-            #     )
-            # ], style={"width": "30%", 'align': 'center', 'margin-left': '34.5%'}),
-            ##########################################################################################################
-
             html.Br(),
             html.Div([
                 # This is the button that navigates the user to the results page once pressed.
@@ -869,4 +661,4 @@ if __name__ == "__main__":
     # If pages are not loading or there may seem to be unwanted behaviour of the application, you may change
     # debug=False to debug=True. This enables the developer tool, which allows to see the error messages if there are
     # any.
-    app.run_server(port=8888, debug=False)
+    app.run_server(port=8888, debug=True)

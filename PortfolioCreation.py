@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import sqlite3
 import Backtesting
-import Data_Handler as dh
+import DataHandler as dh
 import Risk_Scoring
 
 
@@ -51,7 +51,7 @@ def optimal_portfolio():
     # Create the covariance matrix. Most efficiently done by calling the Pandas built-in function .cov() which
     # calculates the covariance of multiple arrays, in this case the whole excess return dataset.
     def covariance_matrix():
-        return df_excess.cov()
+        return df_excess.cov(numeric_only=True)
 
     cov_matrix = covariance_matrix()
     # ind_er as abbreviation to individual asset's expected return
@@ -68,7 +68,6 @@ def optimal_portfolio():
     p_volatility = []
     p_weights = []
 
-    num_assets = len(df_raw.columns[1:])
     # How often is the algorithm supposed to create randomized portfolios to get the one with the highest Sharpe ratio.
     num_portfolios = 10_000
 

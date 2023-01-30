@@ -30,10 +30,10 @@ graph_padding = '5px'
 
 # This variable adjusts the size and positioning of the drop-shadow behind table, graph and box elements for
 # visual appeal.
-boxshadow = '5px 4px 5px 5px lightgrey'
+boxShadow = '5px 4px 5px 5px lightgrey'
 
 # Specifies the style of the tab elements under the GUI's Input Form section.
-TAB_STYLE = {'box-shadow': boxshadow,
+TAB_STYLE = {'box-shadow': boxShadow,
              'border-style': '',
              'border-color': greys[2],
              'font-size': '20px',
@@ -61,7 +61,7 @@ CONTENT_STYLE = {"margin-left": "18rem", "margin-right": "2rem", "padding": "2re
 # Created this function to make styling of Divs easier and faster.
 def STYLE(width):
     return{'width': f'{width}%', 'display': 'inline-block', 'align': 'center', 'padding': '10px',
-           'box-shadow': boxshadow,
+           'box-shadow': boxShadow,
            'borderRadius': '10px',
            'overflow': 'hidden'}
 

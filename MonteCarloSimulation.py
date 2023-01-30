@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-import Data_Handler as dh
+import DataHandler as dh
 
 
 def monte_carlo_simulation(scenario):
@@ -22,7 +22,7 @@ def monte_carlo_simulation(scenario):
             expected_return = dh.forward_looking_expected_return('neutral')
 
         investment = 2_000_000  # <-- Initial Investment set to CHF 2 mil.
-        volatility = float(dh.historical_volatility())  # <-- This has to be the volatility of the created portfolio!
+        volatility = dh.historical_volatility()  # <-- This has to be the volatility of the created portfolio!
         duration = 50  # <-- Duration is set to 50 years to incorporate even very long time-horizons
 
         lst = []
@@ -38,10 +38,9 @@ def monte_carlo_simulation(scenario):
             lst.append(final_value)
         df[i] = lst
 
-    # print(df)
     # --> From the dataframe of all the scenarios, mean, standard deviation, minimum and maximum values are calculated.
-    mean = int(df.iloc[-1, :].mean())
-    std = int(df.iloc[-1, :].std())
-    minimum = int(df.iloc[-1, :].min())
-    maximum = int(df.iloc[-1, :].max())
+    mean = df.iloc[-1, :].mean()
+    std = df.iloc[-1, :].std()
+    minimum = df.iloc[-1, :].min()
+    maximum = df.iloc[-1, :].max()
     return mean, std, maximum, minimum
