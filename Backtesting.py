@@ -24,6 +24,9 @@ def dataframe_dateRefactoring():
     return df
 
 
+print(dataframe_dateRefactoring()['Month'])
+
+
 def dataframe_construction():
     # Call the DataFrame of the function above.
     df = dataframe_dateRefactoring()
@@ -101,13 +104,13 @@ def dataframe_population():
 
             # Calculating the newly rebalanced portfolio value
             PortfolioRebalancingValue = round(df['CA_share'][line] * df['CA'][line-6] +
-                                            df['BO_share'][line] * df['BO'][line-6] +
-                                            df['BOFC_share'][line] * df['BOFC'][line-6] +
-                                            df['SE_share'][line] * df['SE'][line-6] +
-                                            df['GE_share'][line] * df['GE'][line-6] +
-                                            df['GES_share'][line] * df['GES'][line-6] +
-                                            df['EME_share'][line] * df['EME'][line-6] +
-                                            df['RE_share'][line] * df['RE'][line-6], 2)
+                                              df['BO_share'][line] * df['BO'][line-6] +
+                                              df['BOFC_share'][line] * df['BOFC'][line-6] +
+                                              df['SE_share'][line] * df['SE'][line-6] +
+                                              df['GE_share'][line] * df['GE'][line-6] +
+                                              df['GES_share'][line] * df['GES'][line-6] +
+                                              df['EME_share'][line] * df['EME'][line-6] +
+                                              df['RE_share'][line] * df['RE'][line-6], 2)
             # From the rebalanced portfolio value we calculate the value of each asset class position
             # This is done by taking the weight of each asset times the portfolio value
             for asset in asset_list:

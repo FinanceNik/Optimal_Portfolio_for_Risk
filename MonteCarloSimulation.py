@@ -39,8 +39,8 @@ def monte_carlo_simulation(scenario):
         df[i] = lst
 
     # --> From the dataframe of all the scenarios, mean, standard deviation, minimum and maximum values are calculated.
-    mean = df.iloc[-1, :].mean()
-    std = df.iloc[-1, :].std()
-    minimum = df.iloc[-1, :].min()
-    maximum = df.iloc[-1, :].max()
+    mean = round(df.iloc[-1, :].mean(), 2)
+    std = round(df.iloc[-1, :].std(), 2)
+    minimum = round(df.iloc[-1, :].min(), 2)
+    maximum = round(df.iloc[-1, :].max(), 2)
     return mean, std, maximum, minimum
